@@ -1,0 +1,1115 @@
+{
+  "country": "Netherlands",
+  "blocks": [
+    {
+      "metadata": {
+        "year": "2024",
+        "title": "Generated Block 1",
+        "nrOfStamps": "10"
+      },
+      "stamps": [
+        {
+          "height": 30,
+          "width": 24,
+          "denomination": "1 cent",
+          "color": "red",
+          "catalogNumber": "CAT-0001",
+          "nvphNumber": "NVPH-1000",
+          "image": "images/stamps/block-01-stamp-0001.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 31,
+          "width": 25,
+          "denomination": "2 cent",
+          "color": "blue",
+          "catalogNumber": "CAT-0002",
+          "nvphNumber": "NVPH-1001",
+          "image": "images/stamps/block-01-stamp-0002.jpg",
+          "type": "commemorative"
+        },
+        {
+          "height": 32,
+          "width": 26,
+          "denomination": "3 cent",
+          "color": "green",
+          "catalogNumber": "CAT-0003",
+          "nvphNumber": "NVPH-1002",
+          "image": "images/stamps/block-01-stamp-0003.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 33,
+          "width": 27,
+          "denomination": "4 cent",
+          "color": "orange",
+          "catalogNumber": "CAT-0004",
+          "nvphNumber": "NVPH-1003",
+          "image": "images/stamps/block-01-stamp-0004.jpg",
+          "type": "commemorative"
+        },
+        {
+          "height": 34,
+          "width": 24,
+          "denomination": "5 cent",
+          "color": "brown",
+          "catalogNumber": "CAT-0005",
+          "nvphNumber": "NVPH-1004",
+          "image": "images/stamps/block-01-stamp-0005.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 35,
+          "width": 25,
+          "denomination": "6 cent",
+          "color": "red",
+          "catalogNumber": "CAT-0006",
+          "nvphNumber": "NVPH-1005",
+          "image": "images/stamps/block-01-stamp-0006.jpg",
+          "type": "commemorative"
+        },
+        {
+          "height": 36,
+          "width": 26,
+          "denomination": "7 cent",
+          "color": "blue",
+          "catalogNumber": "CAT-0007",
+          "nvphNumber": "NVPH-1006",
+          "image": "images/stamps/block-01-stamp-0007.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 37,
+          "width": 27,
+          "denomination": "8 cent",
+          "color": "green",
+          "catalogNumber": "CAT-0008",
+          "nvphNumber": "NVPH-1007",
+          "image": "images/stamps/block-01-stamp-0008.jpg",
+          "type": "commemorative"
+        },
+        {
+          "height": 38,
+          "width": 24,
+          "denomination": "9 cent",
+          "color": "orange",
+          "catalogNumber": "CAT-0009",
+          "nvphNumber": "NVPH-1008",
+          "image": "images/stamps/block-01-stamp-0009.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 39,
+          "width": 25,
+          "denomination": "10 cent",
+          "color": "brown",
+          "catalogNumber": "CAT-0010",
+          "nvphNumber": "NVPH-1009",
+          "image": "images/stamps/block-01-stamp-0010.jpg",
+          "type": "commemorative"
+        }
+      ],
+      "startingStamp": "CAT-0001",
+      "nextBlockStartingStamp": "CAT-0011"
+    },
+    {
+      "metadata": {
+        "year": "2025",
+        "title": "Generated Block 2",
+        "nrOfStamps": "10"
+      },
+      "stamps": [
+        {
+          "height": 40,
+          "width": 26,
+          "denomination": "11 cent",
+          "color": "red",
+          "catalogNumber": "CAT-0011",
+          "nvphNumber": "NVPH-1010",
+          "image": "images/stamps/block-02-stamp-0011.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 41,
+          "width": 27,
+          "denomination": "12 cent",
+          "color": "blue",
+          "catalogNumber": "CAT-0012",
+          "nvphNumber": "NVPH-1011",
+          "image": "images/stamps/block-02-stamp-0012.jpg",
+          "type": "commemorative"
+        },
+        {
+          "height": 42,
+          "width": 24,
+          "denomination": "13 cent",
+          "color": "green",
+          "catalogNumber": "CAT-0013",
+          "nvphNumber": "NVPH-1012",
+          "image": "images/stamps/block-02-stamp-0013.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 43,
+          "width": 25,
+          "denomination": "14 cent",
+          "color": "orange",
+          "catalogNumber": "CAT-0014",
+          "nvphNumber": "NVPH-1013",
+          "image": "images/stamps/block-02-stamp-0014.jpg",
+          "type": "commemorative"
+        },
+        {
+          "height": 44,
+          "width": 26,
+          "denomination": "15 cent",
+          "color": "brown",
+          "catalogNumber": "CAT-0015",
+          "nvphNumber": "NVPH-1014",
+          "image": "images/stamps/block-02-stamp-0015.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 45,
+          "width": 27,
+          "denomination": "16 cent",
+          "color": "red",
+          "catalogNumber": "CAT-0016",
+          "nvphNumber": "NVPH-1015",
+          "image": "images/stamps/block-02-stamp-0016.jpg",
+          "type": "commemorative"
+        },
+        {
+          "height": 46,
+          "width": 24,
+          "denomination": "17 cent",
+          "color": "blue",
+          "catalogNumber": "CAT-0017",
+          "nvphNumber": "NVPH-1016",
+          "image": "images/stamps/block-02-stamp-0017.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 47,
+          "width": 25,
+          "denomination": "18 cent",
+          "color": "green",
+          "catalogNumber": "CAT-0018",
+          "nvphNumber": "NVPH-1017",
+          "image": "images/stamps/block-02-stamp-0018.jpg",
+          "type": "commemorative"
+        },
+        {
+          "height": 48,
+          "width": 26,
+          "denomination": "19 cent",
+          "color": "orange",
+          "catalogNumber": "CAT-0019",
+          "nvphNumber": "NVPH-1018",
+          "image": "images/stamps/block-02-stamp-0019.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 49,
+          "width": 27,
+          "denomination": "20 cent",
+          "color": "brown",
+          "catalogNumber": "CAT-0020",
+          "nvphNumber": "NVPH-1019",
+          "image": "images/stamps/block-02-stamp-0020.jpg",
+          "type": "commemorative"
+        }
+      ],
+      "startingStamp": "CAT-0011",
+      "nextBlockStartingStamp": "CAT-0021"
+    },
+    {
+      "metadata": {
+        "year": "2026",
+        "title": "Generated Block 3",
+        "nrOfStamps": "10"
+      },
+      "stamps": [
+        {
+          "height": 30,
+          "width": 24,
+          "denomination": "21 cent",
+          "color": "red",
+          "catalogNumber": "CAT-0021",
+          "nvphNumber": "NVPH-1020",
+          "image": "images/stamps/block-03-stamp-0021.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 31,
+          "width": 25,
+          "denomination": "22 cent",
+          "color": "blue",
+          "catalogNumber": "CAT-0022",
+          "nvphNumber": "NVPH-1021",
+          "image": "images/stamps/block-03-stamp-0022.jpg",
+          "type": "commemorative"
+        },
+        {
+          "height": 32,
+          "width": 26,
+          "denomination": "23 cent",
+          "color": "green",
+          "catalogNumber": "CAT-0023",
+          "nvphNumber": "NVPH-1022",
+          "image": "images/stamps/block-03-stamp-0023.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 33,
+          "width": 27,
+          "denomination": "24 cent",
+          "color": "orange",
+          "catalogNumber": "CAT-0024",
+          "nvphNumber": "NVPH-1023",
+          "image": "images/stamps/block-03-stamp-0024.jpg",
+          "type": "commemorative"
+        },
+        {
+          "height": 34,
+          "width": 24,
+          "denomination": "25 cent",
+          "color": "brown",
+          "catalogNumber": "CAT-0025",
+          "nvphNumber": "NVPH-1024",
+          "image": "images/stamps/block-03-stamp-0025.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 35,
+          "width": 25,
+          "denomination": "26 cent",
+          "color": "red",
+          "catalogNumber": "CAT-0026",
+          "nvphNumber": "NVPH-1025",
+          "image": "images/stamps/block-03-stamp-0026.jpg",
+          "type": "commemorative"
+        },
+        {
+          "height": 36,
+          "width": 26,
+          "denomination": "27 cent",
+          "color": "blue",
+          "catalogNumber": "CAT-0027",
+          "nvphNumber": "NVPH-1026",
+          "image": "images/stamps/block-03-stamp-0027.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 37,
+          "width": 27,
+          "denomination": "28 cent",
+          "color": "green",
+          "catalogNumber": "CAT-0028",
+          "nvphNumber": "NVPH-1027",
+          "image": "images/stamps/block-03-stamp-0028.jpg",
+          "type": "commemorative"
+        },
+        {
+          "height": 38,
+          "width": 24,
+          "denomination": "29 cent",
+          "color": "orange",
+          "catalogNumber": "CAT-0029",
+          "nvphNumber": "NVPH-1028",
+          "image": "images/stamps/block-03-stamp-0029.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 39,
+          "width": 25,
+          "denomination": "30 cent",
+          "color": "brown",
+          "catalogNumber": "CAT-0030",
+          "nvphNumber": "NVPH-1029",
+          "image": "images/stamps/block-03-stamp-0030.jpg",
+          "type": "commemorative"
+        }
+      ],
+      "startingStamp": "CAT-0021",
+      "nextBlockStartingStamp": "CAT-0031"
+    },
+    {
+      "metadata": {
+        "year": "2027",
+        "title": "Generated Block 4",
+        "nrOfStamps": "10"
+      },
+      "stamps": [
+        {
+          "height": 40,
+          "width": 26,
+          "denomination": "31 cent",
+          "color": "red",
+          "catalogNumber": "CAT-0031",
+          "nvphNumber": "NVPH-1030",
+          "image": "images/stamps/block-04-stamp-0031.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 41,
+          "width": 27,
+          "denomination": "32 cent",
+          "color": "blue",
+          "catalogNumber": "CAT-0032",
+          "nvphNumber": "NVPH-1031",
+          "image": "images/stamps/block-04-stamp-0032.jpg",
+          "type": "commemorative"
+        },
+        {
+          "height": 42,
+          "width": 24,
+          "denomination": "33 cent",
+          "color": "green",
+          "catalogNumber": "CAT-0033",
+          "nvphNumber": "NVPH-1032",
+          "image": "images/stamps/block-04-stamp-0033.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 43,
+          "width": 25,
+          "denomination": "34 cent",
+          "color": "orange",
+          "catalogNumber": "CAT-0034",
+          "nvphNumber": "NVPH-1033",
+          "image": "images/stamps/block-04-stamp-0034.jpg",
+          "type": "commemorative"
+        },
+        {
+          "height": 44,
+          "width": 26,
+          "denomination": "35 cent",
+          "color": "brown",
+          "catalogNumber": "CAT-0035",
+          "nvphNumber": "NVPH-1034",
+          "image": "images/stamps/block-04-stamp-0035.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 45,
+          "width": 27,
+          "denomination": "36 cent",
+          "color": "red",
+          "catalogNumber": "CAT-0036",
+          "nvphNumber": "NVPH-1035",
+          "image": "images/stamps/block-04-stamp-0036.jpg",
+          "type": "commemorative"
+        },
+        {
+          "height": 46,
+          "width": 24,
+          "denomination": "37 cent",
+          "color": "blue",
+          "catalogNumber": "CAT-0037",
+          "nvphNumber": "NVPH-1036",
+          "image": "images/stamps/block-04-stamp-0037.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 47,
+          "width": 25,
+          "denomination": "38 cent",
+          "color": "green",
+          "catalogNumber": "CAT-0038",
+          "nvphNumber": "NVPH-1037",
+          "image": "images/stamps/block-04-stamp-0038.jpg",
+          "type": "commemorative"
+        },
+        {
+          "height": 48,
+          "width": 26,
+          "denomination": "39 cent",
+          "color": "orange",
+          "catalogNumber": "CAT-0039",
+          "nvphNumber": "NVPH-1038",
+          "image": "images/stamps/block-04-stamp-0039.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 49,
+          "width": 27,
+          "denomination": "40 cent",
+          "color": "brown",
+          "catalogNumber": "CAT-0040",
+          "nvphNumber": "NVPH-1039",
+          "image": "images/stamps/block-04-stamp-0040.jpg",
+          "type": "commemorative"
+        }
+      ],
+      "startingStamp": "CAT-0031",
+      "nextBlockStartingStamp": "CAT-0041"
+    },
+    {
+      "metadata": {
+        "year": "2028",
+        "title": "Generated Block 5",
+        "nrOfStamps": "10"
+      },
+      "stamps": [
+        {
+          "height": 30,
+          "width": 24,
+          "denomination": "41 cent",
+          "color": "red",
+          "catalogNumber": "CAT-0041",
+          "nvphNumber": "NVPH-1040",
+          "image": "images/stamps/block-05-stamp-0041.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 31,
+          "width": 25,
+          "denomination": "42 cent",
+          "color": "blue",
+          "catalogNumber": "CAT-0042",
+          "nvphNumber": "NVPH-1041",
+          "image": "images/stamps/block-05-stamp-0042.jpg",
+          "type": "commemorative"
+        },
+        {
+          "height": 32,
+          "width": 26,
+          "denomination": "43 cent",
+          "color": "green",
+          "catalogNumber": "CAT-0043",
+          "nvphNumber": "NVPH-1042",
+          "image": "images/stamps/block-05-stamp-0043.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 33,
+          "width": 27,
+          "denomination": "44 cent",
+          "color": "orange",
+          "catalogNumber": "CAT-0044",
+          "nvphNumber": "NVPH-1043",
+          "image": "images/stamps/block-05-stamp-0044.jpg",
+          "type": "commemorative"
+        },
+        {
+          "height": 34,
+          "width": 24,
+          "denomination": "45 cent",
+          "color": "brown",
+          "catalogNumber": "CAT-0045",
+          "nvphNumber": "NVPH-1044",
+          "image": "images/stamps/block-05-stamp-0045.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 35,
+          "width": 25,
+          "denomination": "46 cent",
+          "color": "red",
+          "catalogNumber": "CAT-0046",
+          "nvphNumber": "NVPH-1045",
+          "image": "images/stamps/block-05-stamp-0046.jpg",
+          "type": "commemorative"
+        },
+        {
+          "height": 36,
+          "width": 26,
+          "denomination": "47 cent",
+          "color": "blue",
+          "catalogNumber": "CAT-0047",
+          "nvphNumber": "NVPH-1046",
+          "image": "images/stamps/block-05-stamp-0047.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 37,
+          "width": 27,
+          "denomination": "48 cent",
+          "color": "green",
+          "catalogNumber": "CAT-0048",
+          "nvphNumber": "NVPH-1047",
+          "image": "images/stamps/block-05-stamp-0048.jpg",
+          "type": "commemorative"
+        },
+        {
+          "height": 38,
+          "width": 24,
+          "denomination": "49 cent",
+          "color": "orange",
+          "catalogNumber": "CAT-0049",
+          "nvphNumber": "NVPH-1048",
+          "image": "images/stamps/block-05-stamp-0049.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 39,
+          "width": 25,
+          "denomination": "50 cent",
+          "color": "brown",
+          "catalogNumber": "CAT-0050",
+          "nvphNumber": "NVPH-1049",
+          "image": "images/stamps/block-05-stamp-0050.jpg",
+          "type": "commemorative"
+        }
+      ],
+      "startingStamp": "CAT-0041",
+      "nextBlockStartingStamp": "CAT-0051"
+    },
+    {
+      "metadata": {
+        "year": "2029",
+        "title": "Generated Block 6",
+        "nrOfStamps": "10"
+      },
+      "stamps": [
+        {
+          "height": 40,
+          "width": 26,
+          "denomination": "51 cent",
+          "color": "red",
+          "catalogNumber": "CAT-0051",
+          "nvphNumber": "NVPH-1050",
+          "image": "images/stamps/block-06-stamp-0051.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 41,
+          "width": 27,
+          "denomination": "52 cent",
+          "color": "blue",
+          "catalogNumber": "CAT-0052",
+          "nvphNumber": "NVPH-1051",
+          "image": "images/stamps/block-06-stamp-0052.jpg",
+          "type": "commemorative"
+        },
+        {
+          "height": 42,
+          "width": 24,
+          "denomination": "53 cent",
+          "color": "green",
+          "catalogNumber": "CAT-0053",
+          "nvphNumber": "NVPH-1052",
+          "image": "images/stamps/block-06-stamp-0053.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 43,
+          "width": 25,
+          "denomination": "54 cent",
+          "color": "orange",
+          "catalogNumber": "CAT-0054",
+          "nvphNumber": "NVPH-1053",
+          "image": "images/stamps/block-06-stamp-0054.jpg",
+          "type": "commemorative"
+        },
+        {
+          "height": 44,
+          "width": 26,
+          "denomination": "55 cent",
+          "color": "brown",
+          "catalogNumber": "CAT-0055",
+          "nvphNumber": "NVPH-1054",
+          "image": "images/stamps/block-06-stamp-0055.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 45,
+          "width": 27,
+          "denomination": "56 cent",
+          "color": "red",
+          "catalogNumber": "CAT-0056",
+          "nvphNumber": "NVPH-1055",
+          "image": "images/stamps/block-06-stamp-0056.jpg",
+          "type": "commemorative"
+        },
+        {
+          "height": 46,
+          "width": 24,
+          "denomination": "57 cent",
+          "color": "blue",
+          "catalogNumber": "CAT-0057",
+          "nvphNumber": "NVPH-1056",
+          "image": "images/stamps/block-06-stamp-0057.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 47,
+          "width": 25,
+          "denomination": "58 cent",
+          "color": "green",
+          "catalogNumber": "CAT-0058",
+          "nvphNumber": "NVPH-1057",
+          "image": "images/stamps/block-06-stamp-0058.jpg",
+          "type": "commemorative"
+        },
+        {
+          "height": 48,
+          "width": 26,
+          "denomination": "59 cent",
+          "color": "orange",
+          "catalogNumber": "CAT-0059",
+          "nvphNumber": "NVPH-1058",
+          "image": "images/stamps/block-06-stamp-0059.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 49,
+          "width": 27,
+          "denomination": "60 cent",
+          "color": "brown",
+          "catalogNumber": "CAT-0060",
+          "nvphNumber": "NVPH-1059",
+          "image": "images/stamps/block-06-stamp-0060.jpg",
+          "type": "commemorative"
+        }
+      ],
+      "startingStamp": "CAT-0051",
+      "nextBlockStartingStamp": "CAT-0061"
+    },
+    {
+      "metadata": {
+        "year": "2030",
+        "title": "Generated Block 7",
+        "nrOfStamps": "10"
+      },
+      "stamps": [
+        {
+          "height": 30,
+          "width": 24,
+          "denomination": "61 cent",
+          "color": "red",
+          "catalogNumber": "CAT-0061",
+          "nvphNumber": "NVPH-1060",
+          "image": "images/stamps/block-07-stamp-0061.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 31,
+          "width": 25,
+          "denomination": "62 cent",
+          "color": "blue",
+          "catalogNumber": "CAT-0062",
+          "nvphNumber": "NVPH-1061",
+          "image": "images/stamps/block-07-stamp-0062.jpg",
+          "type": "commemorative"
+        },
+        {
+          "height": 32,
+          "width": 26,
+          "denomination": "63 cent",
+          "color": "green",
+          "catalogNumber": "CAT-0063",
+          "nvphNumber": "NVPH-1062",
+          "image": "images/stamps/block-07-stamp-0063.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 33,
+          "width": 27,
+          "denomination": "64 cent",
+          "color": "orange",
+          "catalogNumber": "CAT-0064",
+          "nvphNumber": "NVPH-1063",
+          "image": "images/stamps/block-07-stamp-0064.jpg",
+          "type": "commemorative"
+        },
+        {
+          "height": 34,
+          "width": 24,
+          "denomination": "65 cent",
+          "color": "brown",
+          "catalogNumber": "CAT-0065",
+          "nvphNumber": "NVPH-1064",
+          "image": "images/stamps/block-07-stamp-0065.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 35,
+          "width": 25,
+          "denomination": "66 cent",
+          "color": "red",
+          "catalogNumber": "CAT-0066",
+          "nvphNumber": "NVPH-1065",
+          "image": "images/stamps/block-07-stamp-0066.jpg",
+          "type": "commemorative"
+        },
+        {
+          "height": 36,
+          "width": 26,
+          "denomination": "67 cent",
+          "color": "blue",
+          "catalogNumber": "CAT-0067",
+          "nvphNumber": "NVPH-1066",
+          "image": "images/stamps/block-07-stamp-0067.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 37,
+          "width": 27,
+          "denomination": "68 cent",
+          "color": "green",
+          "catalogNumber": "CAT-0068",
+          "nvphNumber": "NVPH-1067",
+          "image": "images/stamps/block-07-stamp-0068.jpg",
+          "type": "commemorative"
+        },
+        {
+          "height": 38,
+          "width": 24,
+          "denomination": "69 cent",
+          "color": "orange",
+          "catalogNumber": "CAT-0069",
+          "nvphNumber": "NVPH-1068",
+          "image": "images/stamps/block-07-stamp-0069.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 39,
+          "width": 25,
+          "denomination": "70 cent",
+          "color": "brown",
+          "catalogNumber": "CAT-0070",
+          "nvphNumber": "NVPH-1069",
+          "image": "images/stamps/block-07-stamp-0070.jpg",
+          "type": "commemorative"
+        }
+      ],
+      "startingStamp": "CAT-0061",
+      "nextBlockStartingStamp": "CAT-0071"
+    },
+    {
+      "metadata": {
+        "year": "2031",
+        "title": "Generated Block 8",
+        "nrOfStamps": "10"
+      },
+      "stamps": [
+        {
+          "height": 40,
+          "width": 26,
+          "denomination": "71 cent",
+          "color": "red",
+          "catalogNumber": "CAT-0071",
+          "nvphNumber": "NVPH-1070",
+          "image": "images/stamps/block-08-stamp-0071.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 41,
+          "width": 27,
+          "denomination": "72 cent",
+          "color": "blue",
+          "catalogNumber": "CAT-0072",
+          "nvphNumber": "NVPH-1071",
+          "image": "images/stamps/block-08-stamp-0072.jpg",
+          "type": "commemorative"
+        },
+        {
+          "height": 42,
+          "width": 24,
+          "denomination": "73 cent",
+          "color": "green",
+          "catalogNumber": "CAT-0073",
+          "nvphNumber": "NVPH-1072",
+          "image": "images/stamps/block-08-stamp-0073.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 43,
+          "width": 25,
+          "denomination": "74 cent",
+          "color": "orange",
+          "catalogNumber": "CAT-0074",
+          "nvphNumber": "NVPH-1073",
+          "image": "images/stamps/block-08-stamp-0074.jpg",
+          "type": "commemorative"
+        },
+        {
+          "height": 44,
+          "width": 26,
+          "denomination": "75 cent",
+          "color": "brown",
+          "catalogNumber": "CAT-0075",
+          "nvphNumber": "NVPH-1074",
+          "image": "images/stamps/block-08-stamp-0075.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 45,
+          "width": 27,
+          "denomination": "76 cent",
+          "color": "red",
+          "catalogNumber": "CAT-0076",
+          "nvphNumber": "NVPH-1075",
+          "image": "images/stamps/block-08-stamp-0076.jpg",
+          "type": "commemorative"
+        },
+        {
+          "height": 46,
+          "width": 24,
+          "denomination": "77 cent",
+          "color": "blue",
+          "catalogNumber": "CAT-0077",
+          "nvphNumber": "NVPH-1076",
+          "image": "images/stamps/block-08-stamp-0077.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 47,
+          "width": 25,
+          "denomination": "78 cent",
+          "color": "green",
+          "catalogNumber": "CAT-0078",
+          "nvphNumber": "NVPH-1077",
+          "image": "images/stamps/block-08-stamp-0078.jpg",
+          "type": "commemorative"
+        },
+        {
+          "height": 48,
+          "width": 26,
+          "denomination": "79 cent",
+          "color": "orange",
+          "catalogNumber": "CAT-0079",
+          "nvphNumber": "NVPH-1078",
+          "image": "images/stamps/block-08-stamp-0079.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 49,
+          "width": 27,
+          "denomination": "80 cent",
+          "color": "brown",
+          "catalogNumber": "CAT-0080",
+          "nvphNumber": "NVPH-1079",
+          "image": "images/stamps/block-08-stamp-0080.jpg",
+          "type": "commemorative"
+        }
+      ],
+      "startingStamp": "CAT-0071",
+      "nextBlockStartingStamp": "CAT-0081"
+    },
+    {
+      "metadata": {
+        "year": "2032",
+        "title": "Generated Block 9",
+        "nrOfStamps": "10"
+      },
+      "stamps": [
+        {
+          "height": 30,
+          "width": 24,
+          "denomination": "81 cent",
+          "color": "red",
+          "catalogNumber": "CAT-0081",
+          "nvphNumber": "NVPH-1080",
+          "image": "images/stamps/block-09-stamp-0081.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 31,
+          "width": 25,
+          "denomination": "82 cent",
+          "color": "blue",
+          "catalogNumber": "CAT-0082",
+          "nvphNumber": "NVPH-1081",
+          "image": "images/stamps/block-09-stamp-0082.jpg",
+          "type": "commemorative"
+        },
+        {
+          "height": 32,
+          "width": 26,
+          "denomination": "83 cent",
+          "color": "green",
+          "catalogNumber": "CAT-0083",
+          "nvphNumber": "NVPH-1082",
+          "image": "images/stamps/block-09-stamp-0083.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 33,
+          "width": 27,
+          "denomination": "84 cent",
+          "color": "orange",
+          "catalogNumber": "CAT-0084",
+          "nvphNumber": "NVPH-1083",
+          "image": "images/stamps/block-09-stamp-0084.jpg",
+          "type": "commemorative"
+        },
+        {
+          "height": 34,
+          "width": 24,
+          "denomination": "85 cent",
+          "color": "brown",
+          "catalogNumber": "CAT-0085",
+          "nvphNumber": "NVPH-1084",
+          "image": "images/stamps/block-09-stamp-0085.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 35,
+          "width": 25,
+          "denomination": "86 cent",
+          "color": "red",
+          "catalogNumber": "CAT-0086",
+          "nvphNumber": "NVPH-1085",
+          "image": "images/stamps/block-09-stamp-0086.jpg",
+          "type": "commemorative"
+        },
+        {
+          "height": 36,
+          "width": 26,
+          "denomination": "87 cent",
+          "color": "blue",
+          "catalogNumber": "CAT-0087",
+          "nvphNumber": "NVPH-1086",
+          "image": "images/stamps/block-09-stamp-0087.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 37,
+          "width": 27,
+          "denomination": "88 cent",
+          "color": "green",
+          "catalogNumber": "CAT-0088",
+          "nvphNumber": "NVPH-1087",
+          "image": "images/stamps/block-09-stamp-0088.jpg",
+          "type": "commemorative"
+        },
+        {
+          "height": 38,
+          "width": 24,
+          "denomination": "89 cent",
+          "color": "orange",
+          "catalogNumber": "CAT-0089",
+          "nvphNumber": "NVPH-1088",
+          "image": "images/stamps/block-09-stamp-0089.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 39,
+          "width": 25,
+          "denomination": "90 cent",
+          "color": "brown",
+          "catalogNumber": "CAT-0090",
+          "nvphNumber": "NVPH-1089",
+          "image": "images/stamps/block-09-stamp-0090.jpg",
+          "type": "commemorative"
+        }
+      ],
+      "startingStamp": "CAT-0081",
+      "nextBlockStartingStamp": "CAT-0091"
+    },
+    {
+      "metadata": {
+        "year": "2033",
+        "title": "Generated Block 10",
+        "nrOfStamps": "10"
+      },
+      "stamps": [
+        {
+          "height": 40,
+          "width": 26,
+          "denomination": "91 cent",
+          "color": "red",
+          "catalogNumber": "CAT-0091",
+          "nvphNumber": "NVPH-1090",
+          "image": "images/stamps/block-10-stamp-0091.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 41,
+          "width": 27,
+          "denomination": "92 cent",
+          "color": "blue",
+          "catalogNumber": "CAT-0092",
+          "nvphNumber": "NVPH-1091",
+          "image": "images/stamps/block-10-stamp-0092.jpg",
+          "type": "commemorative"
+        },
+        {
+          "height": 42,
+          "width": 24,
+          "denomination": "93 cent",
+          "color": "green",
+          "catalogNumber": "CAT-0093",
+          "nvphNumber": "NVPH-1092",
+          "image": "images/stamps/block-10-stamp-0093.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 43,
+          "width": 25,
+          "denomination": "94 cent",
+          "color": "orange",
+          "catalogNumber": "CAT-0094",
+          "nvphNumber": "NVPH-1093",
+          "image": "images/stamps/block-10-stamp-0094.jpg",
+          "type": "commemorative"
+        },
+        {
+          "height": 44,
+          "width": 26,
+          "denomination": "95 cent",
+          "color": "brown",
+          "catalogNumber": "CAT-0095",
+          "nvphNumber": "NVPH-1094",
+          "image": "images/stamps/block-10-stamp-0095.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 45,
+          "width": 27,
+          "denomination": "96 cent",
+          "color": "red",
+          "catalogNumber": "CAT-0096",
+          "nvphNumber": "NVPH-1095",
+          "image": "images/stamps/block-10-stamp-0096.jpg",
+          "type": "commemorative"
+        },
+        {
+          "height": 46,
+          "width": 24,
+          "denomination": "97 cent",
+          "color": "blue",
+          "catalogNumber": "CAT-0097",
+          "nvphNumber": "NVPH-1096",
+          "image": "images/stamps/block-10-stamp-0097.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 47,
+          "width": 25,
+          "denomination": "98 cent",
+          "color": "green",
+          "catalogNumber": "CAT-0098",
+          "nvphNumber": "NVPH-1097",
+          "image": "images/stamps/block-10-stamp-0098.jpg",
+          "type": "commemorative"
+        },
+        {
+          "height": 48,
+          "width": 26,
+          "denomination": "99 cent",
+          "color": "orange",
+          "catalogNumber": "CAT-0099",
+          "nvphNumber": "NVPH-1098",
+          "image": "images/stamps/block-10-stamp-0099.jpg",
+          "type": "definitive"
+        },
+        {
+          "height": 49,
+          "width": 27,
+          "denomination": "100 cent",
+          "color": "brown",
+          "catalogNumber": "CAT-0100",
+          "nvphNumber": "NVPH-1099",
+          "image": "images/stamps/block-10-stamp-0100.jpg",
+          "type": "commemorative"
+        }
+      ],
+      "startingStamp": "CAT-0091",
+      "nextBlockStartingStamp": ""
+    }
+  ]
+}
