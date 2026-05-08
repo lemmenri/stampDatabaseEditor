@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "generate:testdata": "node generate-testdata.js"
+    "generate:testdata": "node generate-testdata.js",
+    "editor:start": "node editor-app/server.js"
   },
   "keywords": [],
   "author": "",
@@ -13,6 +14,7 @@
   "type": "commonjs",
   "dependencies": {
     "better-sqlite3": "^12.9.0",
+    "express": "^5.2.1",
     "jpeg-js": "^0.4.4"
   }
 }

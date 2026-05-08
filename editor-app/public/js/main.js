@@ -1,0 +1,177 @@
+import {
+  createBlock,
+  createStamp,
+  deleteBlock,
+  deleteStamp,
+  fetchBlocks,
+  moveStamp,
+  updateBlock,
+  updateStamp,
+} from "./api.js";
+import { appState, findBlockById, setBlocks } from "./state.js";
+import {
+  bindStaticEvents,
+  blockFormData,
+  renderBlocks,
+  renderBlockSelectOptions,
+  resetBlockForm,
+  resetStampForm,
+  stampFormData,
+  setBlockFormError,
+  setStampFormError,
+  bindSearchFilter,
+} from "./ui.js";
+
+let lastSearch = "";
+async function loadData(search = "") {
+  setBlockFormError("");
+  setStampFormError("");
+  try {
+    const payload = await fetchBlocks();
+    setBlocks(payload.blocks || []);
+    renderBlockSelectOptions();
+    renderBlocks(handlers, search);
+  } catch (e) {
+    setBlockFormError("Failed to load data: " + e.message);
+  }
+}
+
+function firstBlockId() {
+  return appState.blocks[0] ? appState.blocks[0].block_id : "";
+}
+
+function notify(message, which = "block") {
+  if (which === "block") setBlockFormError(message);
+  else setStampFormError(message);
+}
+
+const handlers = {
+  onRefresh: async () => {
+    await loadData();
+  },
+
+  onNewBlock: () => {
+    resetBlockForm({});
+  },
+
+  onNewStamp: () => {
+    resetStampForm({ block_id: firstBlockId() });
+  },
+
+  onSelectBlock: (block) => {
+    appState.selectedBlockId = block.block_id;
+    resetBlockForm(block);
+  },
+
+  onCreateStampInBlock: (block) => {
+    resetStampForm({ block_id: block.block_id, catalog_number: "" });
+  },
+
+  onDeleteBlock: async (block) => {
+    setBlockFormError("");
+    setStampFormError("");
+    if (
+      !confirm(
+        `Remove block ${block.block_id} and all ${block.stamps.length} stamps?`,
+      )
+    )
+      return;
+    try {
+      await deleteBlock(block.block_id);
+      await loadData(lastSearch);
+      resetBlockForm({});
+      resetStampForm({ block_id: firstBlockId() });
+    } catch (e) {
+      setBlockFormError(e.message);
+    }
+  },
+
+  onSubmitBlock: async (event) => {
+    event.preventDefault();
+    setBlockFormError("");
+    setStampFormError("");
+    const data = blockFormData();
+    try {
+      if (data.block_id) {
+        await updateBlock(data.block_id, data);
+        notify(`Block ${data.block_id} updated`, "block");
+      } else {
+        await createBlock(data);
+        notify("Block created", "block");
+      }
+      await loadData(lastSearch);
+    } catch (e) {
+      setBlockFormError(e.message);
+    }
+  },
+
+  onSelectStamp: (stamp) => {
+    appState.selectedStampId = stamp.stamp_id;
+    resetStampForm(stamp);
+  },
+
+  onDeleteStamp: async (stamp) => {
+    setStampFormError("");
+    if (!confirm(`Remove stamp ${stamp.catalog_number || stamp.stamp_id}?`))
+      return;
+    try {
+      await deleteStamp(stamp.stamp_id);
+      await loadData(lastSearch);
+    } catch (e) {
+      setStampFormError(e.message);
+    }
+  },
+
+  onSubmitStamp: async (event) => {
+    event.preventDefault();
+    setStampFormError("");
+    setBlockFormError("");
+    const data = stampFormData();
+    if (!data.block_id) {
+      setStampFormError("Select a block for this stamp.");
+      return;
+    }
+    try {
+      if (data.stamp_id) {
+        await updateStamp(data.stamp_id, data);
+        notify(`Stamp ${data.stamp_id} updated`, "stamp");
+      } else {
+        await createStamp(data);
+        notify("Stamp created", "stamp");
+      }
+      await loadData(lastSearch);
+    } catch (e) {
+      setStampFormError(e.message);
+    }
+  },
+
+  onMoveStamp: async (stampId, targetBlockId) => {
+    setBlockFormError("");
+    setStampFormError("");
+    const block = findBlockById(targetBlockId);
+    if (!block) {
+      setBlockFormError("Target block not found");
+      return;
+    }
+    try {
+      await moveStamp(stampId, targetBlockId);
+      await loadData(lastSearch);
+    } catch (e) {
+      setBlockFormError(e.message);
+    }
+  },
+};
+
+bindStaticEvents(handlers);
+bindSearchFilter((search) => {
+  lastSearch = search;
+  renderBlocks(handlers, search);
+});
+
+loadData()
+  .then(() => {
+    resetStampForm({ block_id: firstBlockId() });
+  })
+  .catch((error) => {
+    setBlockFormError(`Failed to load data: ${error.message}`);
+  });
