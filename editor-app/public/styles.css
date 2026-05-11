@@ -407,6 +407,7 @@ button:hover {
 .stamp-card .meta {
   color: var(--muted);
   font-size: 0.8rem;
+  white-space: pre-wrap;
 }
 
 @media (max-width: 960px) {

@@ -620,9 +620,18 @@ export function renderBlocks(handlers) {
       const img = card.querySelector("img");
       img.src = stamp.image_url || "";
       img.alt = stamp.catalog_number || "stamp image";
-      card.querySelector(".catalog").textContent =
-        stamp.catalog_number || `Stamp ${stamp.stamp_id}`;
-      card.querySelector(".meta").textContent = stampMetaText(stamp);
+      const titleText =
+        stamp.nvph_number || stamp.catalog_number || `Stamp ${stamp.stamp_id}`;
+      card.querySelector(".catalog").textContent = titleText;
+      const metaLines = [];
+      if (stamp.catalog_number && stamp.catalog_number !== stamp.nvph_number) {
+        metaLines.push(stamp.catalog_number);
+      }
+      const metaText = stampMetaText(stamp);
+      if (metaText) {
+        metaLines.push(metaText);
+      }
+      card.querySelector(".meta").textContent = metaLines.join("\n");
       card.addEventListener("click", (event) => {
         if (event.target.closest(".remove-stamp")) {
           return;
