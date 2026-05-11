@@ -9,7 +9,6 @@ const db = new Database("stamps.db");
 db.exec(`
   CREATE TABLE IF NOT EXISTS blocks (
     block_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    country TEXT,
     year TEXT,
     title TEXT,
     nr_of_stamps INTEGER,
@@ -38,8 +37,8 @@ const collections = JSON.parse(rawData);
 
 // 4. Prepare Statements (Better for performance and security)
 const insertBlock = db.prepare(`
-  INSERT INTO blocks (country, year, title, nr_of_stamps, starting_stamp, next_block_starting_stamp)
-  VALUES (?, ?, ?, ?, ?, ?)
+  INSERT INTO blocks (year, title, nr_of_stamps, starting_stamp, next_block_starting_stamp)
+  VALUES (?, ?, ?, ?, ?)
 `);
 
 const insertStamp = db.prepare(`
@@ -53,7 +52,6 @@ const migrate = db.transaction((data) => {
     for (const block of collection.blocks) {
       // Insert Block metadata
       const blockResult = insertBlock.run(
-        collection.country,
         block.metadata.year,
         block.metadata.title,
         block.metadata.nrOfStamps,

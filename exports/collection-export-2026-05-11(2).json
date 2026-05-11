@@ -1,0 +1,239 @@
+{
+  "country": "Netherlands",
+  "blocks": [
+    {
+      "metadata": {
+        "year": "1852",
+        "title": "Koning Willem III",
+        "nrOfStamps": "3"
+      },
+      "stamps": [
+        {
+          "height": 23,
+          "width": 21,
+          "denomination": "5C",
+          "color": "Blauw",
+          "catalogNumber": "1",
+          "nvphNumber": "1",
+          "image": "images/0001.jpg",
+          "type": "A"
+        },
+        {
+          "height": 32,
+          "width": 24,
+          "denomination": "10C",
+          "color": "Karmijn",
+          "catalogNumber": "2",
+          "nvphNumber": "2",
+          "image": "images/0002.jpg",
+          "type": "A1"
+        },
+        {
+          "height": 32,
+          "width": 24,
+          "denomination": "15C",
+          "color": "Oranje",
+          "catalogNumber": "3",
+          "nvphNumber": "3",
+          "image": "images/0003.jpg",
+          "type": "A2"
+        }
+      ],
+      "startingStamp": "1",
+      "nextBlockStartingStamp": "3"
+    },
+    {
+      "metadata": {
+        "year": "1864",
+        "title": "Koning Willem III",
+        "nrOfStamps": "3"
+      },
+      "stamps": [
+        {
+          "height": 32,
+          "width": 24,
+          "denomination": "5C",
+          "color": "Blauw",
+          "catalogNumber": "4",
+          "nvphNumber": "4",
+          "image": "images/0004.jpg",
+          "type": "B"
+        },
+        {
+          "height": 32,
+          "width": 24,
+          "denomination": "10C",
+          "color": "Karmijn",
+          "catalogNumber": "5",
+          "nvphNumber": "5",
+          "image": "images/0005.jpg",
+          "type": "B1"
+        },
+        {
+          "height": 32,
+          "width": 24,
+          "denomination": "15C",
+          "color": "Oranje",
+          "catalogNumber": "6",
+          "nvphNumber": "6",
+          "image": "images/0006.jpg",
+          "type": "B2"
+        }
+      ],
+      "startingStamp": "4",
+      "nextBlockStartingStamp": "6"
+    },
+    {
+      "metadata": {
+        "year": "1867",
+        "title": "Koning Willem III",
+        "nrOfStamps": "6"
+      },
+      "stamps": [
+        {
+          "height": 24,
+          "width": 19,
+          "denomination": "5C",
+          "color": "Blauw",
+          "catalogNumber": "7",
+          "nvphNumber": "7",
+          "image": "images/0007.jpg",
+          "type": "C"
+        },
+        {
+          "height": 19,
+          "width": 24,
+          "denomination": "10C",
+          "color": "Karmijn",
+          "catalogNumber": "8",
+          "nvphNumber": "8",
+          "image": "images/0008.jpg",
+          "type": "C1"
+        },
+        {
+          "height": 19,
+          "width": 24,
+          "denomination": "15C",
+          "color": "Bruin",
+          "catalogNumber": "9",
+          "nvphNumber": "9",
+          "image": "images/0009.jpg",
+          "type": "C2"
+        },
+        {
+          "height": 19,
+          "width": 24,
+          "denomination": "20C",
+          "color": "Donker groen",
+          "catalogNumber": "10",
+          "nvphNumber": "10",
+          "image": "images/0010.jpg",
+          "type": "C3"
+        },
+        {
+          "height": 19,
+          "width": 24,
+          "denomination": "25C",
+          "color": "Donker violet",
+          "catalogNumber": "11",
+          "nvphNumber": "11",
+          "image": "images/0011.jpg",
+          "type": "C4"
+        },
+        {
+          "height": 19,
+          "width": 24,
+          "denomination": "50C",
+          "color": "Goud",
+          "catalogNumber": "12",
+          "nvphNumber": "12",
+          "image": "images/0012.jpg",
+          "type": "C5"
+        }
+      ],
+      "startingStamp": "7",
+      "nextBlockStartingStamp": "12"
+    },
+    {
+      "metadata": {
+        "year": "1869 - 1871",
+        "title": "Nationaal Wapen",
+        "nrOfStamps": "6"
+      },
+      "stamps": [
+        {
+          "height": 32,
+          "width": 24,
+          "denomination": "1/2C",
+          "color": "Rood",
+          "catalogNumber": "13Stampworld",
+          "nvphNumber": "13",
+          "image": "images/0013.jpg",
+          "type": "D"
+        },
+        {
+          "height": 0,
+          "width": 0,
+          "denomination": "1C",
+          "color": "Zwart",
+          "catalogNumber": "14A",
+          "nvphNumber": "14",
+          "image": "images/0014.jpg",
+          "type": ""
+        },
+        {
+          "height": 0,
+          "width": 0,
+          "denomination": "1C",
+          "color": "Groen",
+          "catalogNumber": "15",
+          "nvphNumber": "15",
+          "image": "images/0015.jpg",
+          "type": ""
+        },
+        {
+          "height": 0,
+          "width": 0,
+          "denomination": "",
+          "color": "",
+          "catalogNumber": "16",
+          "nvphNumber": "16",
+          "image": "images/0016.jpg",
+          "type": ""
+        },
+        {
+          "height": 0,
+          "width": 0,
+          "denomination": "2C",
+          "color": "Geel",
+          "catalogNumber": "17",
+          "nvphNumber": "17",
+          "image": "images/0017.jpg",
+          "type": ""
+        },
+        {
+          "height": 0,
+          "width": 0,
+          "denomination": "2 1/2C",
+          "color": "Paars",
+          "catalogNumber": "18",
+          "nvphNumber": "18",
+          "image": "images/0018.jpg",
+          "type": ""
+        }
+      ],
+      "startingStamp": "13Stampworld",
+      "nextBlockStartingStamp": "18"
+    },
+    {
+      "metadata": {
+        "year": "1872 - 1888",
+        "title": "Koning Willem III",
+        "nrOfStamps": "0"
+      },
+      "stamps": [],
+      "startingStamp": "",
+      "nextBlockStartingStamp": ""
+    }
+  ]
+}

@@ -180,7 +180,6 @@ function getBlocks() {
     .prepare(
       `SELECT
         block_id,
-        country,
         year,
         title,
         block_order
@@ -192,10 +191,8 @@ function getBlocks() {
 }
 
 function toExportCollection(blocks) {
-  const country = blocks.find((block) => block.country)?.country || "";
-
   return {
-    country,
+    country: "Netherlands",
     blocks: blocks.map((block) => ({
       metadata: {
         year: block.year || "",
@@ -287,20 +284,19 @@ app.get("/api/export/json", (req, res) => {
 });
 
 app.post("/api/blocks", (req, res) => {
-  const { country, year, title } = req.body;
+  const { year, title } = req.body;
 
   const result = db
     .prepare(
-      `INSERT INTO blocks (country, year, title, block_order)
-       VALUES (?, ?, ?, ?)`,
+      `INSERT INTO blocks (year, title, block_order)
+       VALUES (?, ?, ?)`,
     )
-    .run(country || "", year || "", title || "", nextBlockOrder());
+    .run(year || "", title || "", nextBlockOrder());
 
   const created = db
     .prepare(
       `SELECT
         block_id,
-        country,
         year,
         title
        FROM blocks
@@ -313,21 +309,19 @@ app.post("/api/blocks", (req, res) => {
 
 app.put("/api/blocks/:blockId", (req, res) => {
   const blockId = Number(req.params.blockId);
-  const { country, year, title } = req.body;
+  const { year, title } = req.body;
 
   db.prepare(
     `UPDATE blocks
-     SET country = ?,
-         year = ?,
-         title = ?
+       SET year = ?,
+           title = ?
      WHERE block_id = ?`,
-  ).run(country || "", year || "", title || "", blockId);
+  ).run(year || "", title || "", blockId);
 
   const updated = db
     .prepare(
       `SELECT
         block_id,
-        country,
         year,
         title
        FROM blocks

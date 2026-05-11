@@ -275,7 +275,6 @@ export function blockFormData() {
   const formData = new FormData(blockForm);
   return {
     block_id: formData.get("block_id"),
-    country: formData.get("country"),
     year: formData.get("year"),
     title: formData.get("title"),
   };
@@ -300,7 +299,6 @@ export function stampFormData() {
 export function resetBlockForm(defaults = {}) {
   blockForm.reset();
   blockForm.elements.block_id.value = defaults.block_id ?? "";
-  blockForm.elements.country.value = defaults.country ?? "Netherlands";
   blockForm.elements.year.value = defaults.year ?? "";
   blockForm.elements.title.value = defaults.title ?? "";
 }
@@ -333,7 +331,8 @@ export function bindStaticEvents(handlers) {
 }
 
 function blockHeaderText(block) {
-  return `${block.country || "No country"} | ${block.year || "No year"}`;
+  const count = block.stamps?.length || 0;
+  return `${block.year || "No year"} | ${count} stamp${count === 1 ? "" : "s"}`;
 }
 
 function stampMetaText(stamp) {
