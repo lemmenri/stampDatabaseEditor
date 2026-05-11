@@ -5,6 +5,7 @@ import {
   deleteStamp,
   fetchExportJson,
   fetchBlocks,
+  importJson,
   moveStamp,
   updateBlock,
   updateStamp,
@@ -14,17 +15,21 @@ import {
   bindStaticEvents,
   blockFormData,
   closeBlockDialog,
+  closeImportDialog,
   closeStampDialog,
   openBlockDialog,
   openStampDialog,
-  renderBlocks,
-  renderBlockSelectOptions,
+  openImportDialog,
   resetBlockForm,
+  resetImportForm,
   resetStampForm,
-  stampFormData,
+  importFormData,
   setBlockFormError,
+  setImportFormError,
   setStampFormError,
   bindFilterPanel,
+  renderBlocks,
+  renderBlockSelectOptions,
 } from "./ui.js";
 
 async function loadData() {
@@ -70,6 +75,42 @@ const handlers = {
       URL.revokeObjectURL(url);
     } catch (error) {
       alert(`Failed to export JSON: ${error.message}`);
+    }
+  },
+
+  onImportJson: () => {
+    setBlockFormError("");
+    setStampFormError("");
+    setImportFormError("");
+    resetImportForm();
+    openImportDialog();
+  },
+
+  onSubmitImport: async (event) => {
+    event.preventDefault();
+    setImportFormError("");
+    setBlockFormError("");
+    setStampFormError("");
+    try {
+      const { jsonText, mode } = await importFormData();
+      if (!jsonText) {
+        throw new Error("Please provide JSON by file or paste it into the text box.");
+      }
+      let collection;
+      try {
+        collection = JSON.parse(jsonText);
+      } catch (parseError) {
+        throw new Error("Invalid JSON format. Please check the file or pasted content.");
+      }
+      if (mode === "replace" && !confirm("Replacing will delete the current collection. Continue?")) {
+        return;
+      }
+      await importJson(collection, mode);
+      await loadData();
+      closeImportDialog();
+      notify("Import complete", "block");
+    } catch (e) {
+      setImportFormError(e.message);
     }
   },
 

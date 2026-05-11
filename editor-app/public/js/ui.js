@@ -18,6 +18,14 @@ const stampForm = el("#stampForm");
 const stampBlockSelect = el("#stampBlockSelect");
 const addBlockBtn = document.getElementById("addBlockBtn");
 const exportJsonBtn = document.getElementById("exportJsonBtn");
+const importJsonBtn = document.getElementById("importJsonBtn");
+const importDialog = el("#importDialog");
+const importForm = el("#importForm");
+const importJsonFile = el("#importJsonFile");
+const importJsonText = el("#importJsonText");
+const importReplaceWarning = el("#importReplaceWarning");
+const closeImportDialogBtn = document.getElementById("closeImportDialogBtn");
+const cancelImportBtn = document.getElementById("cancelImportBtn");
 const blockFormError = document.getElementById("blockFormError");
 const stampFormError = document.getElementById("stampFormError");
 const toggleCollapseAllBtn = document.getElementById("toggleCollapseAllBtn");
@@ -317,17 +325,92 @@ export function resetStampForm(defaults = {}) {
   stampForm.elements.stamp_type.value = defaults.stamp_type ?? "";
 }
 
+export function resetImportForm() {
+  importForm.reset();
+  importJsonText.value = "";
+  importJsonFile.value = "";
+  setImportReplaceWarning(false);
+  setImportFormError("");
+}
+
+export function openImportDialog() {
+  resetImportForm();
+  openDialog(importDialog);
+}
+
+export function setImportFormError(msg) {
+  const errorNode = document.getElementById("importFormError");
+  if (msg) {
+    errorNode.textContent = msg;
+    errorNode.style.display = "block";
+  } else {
+    errorNode.textContent = "";
+    errorNode.style.display = "none";
+  }
+}
+
+export function closeImportDialog() {
+  if (importDialog.open) {
+    importDialog.close();
+  }
+}
+
+function setImportReplaceWarning(show) {
+  importReplaceWarning.hidden = !show;
+}
+
+export async function importFormData() {
+  const formData = new FormData(importForm);
+  let jsonText = importJsonText.value.trim();
+  const file = importJsonFile.files[0];
+  if (file) {
+    jsonText = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result || "");
+      reader.onerror = () => reject(new Error("Failed to read import file"));
+      reader.readAsText(file);
+    });
+  }
+  return {
+    jsonText: String(jsonText || "").trim(),
+    mode: String(formData.get("import_mode") || "add"),
+  };
+}
+
 export function bindStaticEvents(handlers) {
   el("#refreshBtn").addEventListener("click", handlers.onRefresh);
   exportJsonBtn.addEventListener("click", handlers.onExportJson);
+  importJsonBtn.addEventListener("click", handlers.onImportJson);
   addBlockBtn.addEventListener("click", handlers.onNewBlock);
   blockForm.addEventListener("submit", handlers.onSubmitBlock);
   stampForm.addEventListener("submit", handlers.onSubmitStamp);
+  importForm.addEventListener("submit", handlers.onSubmitImport);
+  importForm.addEventListener("change", (event) => {
+    if (event.target.name === "import_mode") {
+      setImportReplaceWarning(event.target.value === "replace");
+    }
+  });
+  importJsonFile.addEventListener("change", async () => {
+    const file = importJsonFile.files[0];
+    if (!file) return;
+    try {
+      importJsonText.value = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result || "");
+        reader.onerror = () => reject(new Error("Failed to read import file"));
+        reader.readAsText(file);
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  });
 
   closeBlockDialogBtn.addEventListener("click", closeBlockDialog);
   closeStampDialogBtn.addEventListener("click", closeStampDialog);
+  closeImportDialogBtn.addEventListener("click", closeImportDialog);
   cancelBlockBtn.addEventListener("click", closeBlockDialog);
   cancelStampBtn.addEventListener("click", closeStampDialog);
+  cancelImportBtn.addEventListener("click", closeImportDialog);
 }
 
 function blockHeaderText(block) {

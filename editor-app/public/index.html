@@ -11,6 +11,7 @@
       <h1>Stamp DB Editor</h1>
       <div class="topbar-actions">
         <button id="exportJsonBtn" type="button">Export JSON</button>
+        <button id="importJsonBtn" type="button">Import JSON</button>
         <button id="refreshBtn" type="button">Refresh</button>
       </div>
     </header>
@@ -164,6 +165,54 @@
         <div id="blocksContainer" class="blocks-grid"></div>
       </section>
     </main>
+
+    <dialog id="importDialog" class="form-dialog">
+      <div class="dialog-head">
+        <h2>Import JSON</h2>
+        <button
+          id="closeImportDialogBtn"
+          type="button"
+          class="icon-btn"
+          aria-label="Close import form"
+          title="Close"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M18.3 5.7L12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"
+            />
+          </svg>
+        </button>
+      </div>
+      <div id="importFormError" class="error-banner" style="display: none"></div>
+      <form id="importForm">
+        <label>
+          JSON file
+          <input id="importJsonFile" type="file" accept="application/json" />
+        </label>
+        <label>
+          Or paste JSON
+          <textarea id="importJsonText" rows="10"></textarea>
+        </label>
+        <fieldset>
+          <legend>Import mode</legend>
+          <label>
+            <input type="radio" name="import_mode" value="add" checked />
+            Add to current collection
+          </label>
+          <label>
+            <input type="radio" name="import_mode" value="replace" />
+            Replace current collection
+          </label>
+        </fieldset>
+        <p class="import-warning" id="importReplaceWarning" hidden>
+          Warning: replacing will remove all existing blocks and stamps.
+        </p>
+        <div class="actions">
+          <button type="submit">Import JSON</button>
+          <button type="button" id="cancelImportBtn">Cancel</button>
+        </div>
+      </form>
+    </dialog>
 
     <dialog id="blockDialog" class="form-dialog">
       <div class="dialog-head">

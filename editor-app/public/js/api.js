@@ -95,3 +95,11 @@ export async function moveStamp(stampId, blockId) {
 export async function fetchExportJson() {
   return request("/api/export/json");
 }
+
+export async function importJson(collection, mode = "add") {
+  return request("/api/import/json", {
+    method: "POST",
+    headers: jsonHeaders,
+    body: JSON.stringify({ collection, mode }),
+  });
+}

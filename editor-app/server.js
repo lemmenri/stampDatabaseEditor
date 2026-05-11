@@ -283,6 +283,79 @@ app.get("/api/export/json", (req, res) => {
   res.json(collection);
 });
 
+app.post("/api/import/json", (req, res) => {
+  const { collection, mode } = req.body || {};
+  if (!collection || typeof collection !== "object") {
+    return res.status(400).json({ error: "Missing or invalid collection payload" });
+  }
+
+  const blocks = Array.isArray(collection.blocks) ? collection.blocks : [];
+  const replaceMode = mode === "replace";
+
+  const insertBlockStmt = db.prepare(
+    `INSERT INTO blocks (year, title, block_order)
+     VALUES (?, ?, ?)`,
+  );
+  const insertStampStmt = db.prepare(
+    `INSERT INTO stamps (block_id, catalog_number, nvph_number, denomination, color, height, width, image_path, stamp_type, stamp_order)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+  );
+
+  const tx = db.transaction(() => {
+    if (replaceMode) {
+      db.prepare("DELETE FROM stamps").run();
+      db.prepare("DELETE FROM blocks").run();
+    }
+
+    let nextOrder = db
+      .prepare("SELECT COALESCE(MAX(block_order), -1) + 1 AS next_order FROM blocks")
+      .get().next_order;
+
+    for (const [blockIndex, block] of blocks.entries()) {
+      const metadata = block.metadata || {};
+      const blockId = insertBlockStmt.run(
+        metadata.year || "",
+        metadata.title || "",
+        nextOrder++,
+      ).lastInsertRowid;
+
+
+      for (const [stampIndex, stamp] of (block.stamps || []).entries()) {
+        let image = stamp.image || "";
+        if (typeof image === "string") {
+          image = image.replace(/\\\\/g, "/");
+          if (image.startsWith("/")) {
+            image = image.slice(1);
+          }
+        } else {
+          image = "";
+        }
+
+        insertStampStmt.run(
+          blockId,
+          stamp.catalogNumber || "",
+          stamp.nvphNumber || "",
+          stamp.denomination || "",
+          stamp.color || "",
+          Number(stamp.height || 0),
+          Number(stamp.width || 0),
+          image,
+          stamp.type || "",
+          stampIndex,
+        );
+      }
+    }
+  });
+
+  try {
+    tx();
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+
+  res.json({ ok: true, importedBlocks: blocks.length, mode: replaceMode ? "replace" : "add" });
+});
+
 app.post("/api/blocks", (req, res) => {
   const { year, title } = req.body;
 
