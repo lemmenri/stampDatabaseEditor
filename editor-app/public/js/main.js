@@ -12,6 +12,10 @@ import { appState, findBlockById, setBlocks } from "./state.js";
 import {
   bindStaticEvents,
   blockFormData,
+  closeBlockDialog,
+  closeStampDialog,
+  openBlockDialog,
+  openStampDialog,
   renderBlocks,
   renderBlockSelectOptions,
   resetBlockForm,
@@ -52,19 +56,23 @@ const handlers = {
 
   onNewBlock: () => {
     resetBlockForm({});
+    openBlockDialog();
   },
 
   onNewStamp: () => {
     resetStampForm({ block_id: firstBlockId() });
+    openStampDialog();
   },
 
   onSelectBlock: (block) => {
     appState.selectedBlockId = block.block_id;
     resetBlockForm(block);
+    openBlockDialog();
   },
 
   onCreateStampInBlock: (block) => {
     resetStampForm({ block_id: block.block_id, catalog_number: "" });
+    openStampDialog();
   },
 
   onDeleteBlock: async (block) => {
@@ -100,6 +108,7 @@ const handlers = {
         notify("Block created", "block");
       }
       await loadData(lastSearch);
+      closeBlockDialog();
     } catch (e) {
       setBlockFormError(e.message);
     }
@@ -108,6 +117,7 @@ const handlers = {
   onSelectStamp: (stamp) => {
     appState.selectedStampId = stamp.stamp_id;
     resetStampForm(stamp);
+    openStampDialog();
   },
 
   onDeleteStamp: async (stamp) => {
@@ -140,6 +150,7 @@ const handlers = {
         notify("Stamp created", "stamp");
       }
       await loadData(lastSearch);
+      closeStampDialog();
     } catch (e) {
       setStampFormError(e.message);
     }

@@ -13,74 +13,15 @@
     </header>
 
     <main class="layout">
-      <aside class="panel forms-panel">
-        <div
-          id="blockFormError"
-          class="error-banner"
-          style="display: none"
-        ></div>
-        <section>
-          <h2>Block Form</h2>
-          <form id="blockForm">
-            <input type="hidden" name="block_id" />
-            <label>Country <input name="country" required /></label>
-            <label>Year <input name="year" /></label>
-            <label>Title <input name="title" /></label>
-            <label
-              >Nr of stamps <input name="nr_of_stamps" type="number" min="0"
-            /></label>
-            <label>Starting stamp <input name="starting_stamp" /></label>
-            <label
-              >Next block starting stamp
-              <input name="next_block_starting_stamp"
-            /></label>
-            <div class="actions">
-              <button type="submit">Save Block</button>
-              <button type="button" id="newBlockBtn">New Block</button>
-            </div>
-          </form>
-        </section>
-
-        <section>
-          <h2>Stamp Form</h2>
-          <form id="stampForm">
-            <div
-              id="stampFormError"
-              class="error-banner"
-              style="display: none"
-            ></div>
-            <input type="hidden" name="stamp_id" />
-            <label
-              >Block
-              <select name="block_id" required id="stampBlockSelect"></select>
-            </label>
-            <label
-              >Catalog number <input name="catalog_number" required
-            /></label>
-            <label>NVPH number <input name="nvph_number" /></label>
-            <label>Denomination <input name="denomination" /></label>
-            <label>Color <input name="color" /></label>
-            <label
-              >Height <input name="height" type="number" step="0.1"
-            /></label>
-            <label>Width <input name="width" type="number" step="0.1" /></label>
-            <label
-              >Image path
-              <input name="image_path" placeholder="images/stamps/example.jpg"
-            /></label>
-            <label>Type <input name="stamp_type" /></label>
-            <div class="actions">
-              <button type="submit">Save Stamp</button>
-              <button type="button" id="newStampBtn">New Stamp</button>
-            </div>
-          </form>
-        </section>
-      </aside>
-
       <section class="panel blocks-panel">
         <div class="blocks-toolbar">
           <h2>Blocks</h2>
-          <button id="toggleCollapseAllBtn" type="button">Collapse All</button>
+          <div class="blocks-toolbar-actions">
+            <button id="addBlockBtn" type="button">Add</button>
+            <button id="toggleCollapseAllBtn" type="button">
+              Collapse All
+            </button>
+          </div>
         </div>
         <p class="hint">
           Drag stamps between blocks. Click a stamp or block to edit details in
@@ -97,6 +38,89 @@
         <div id="blocksContainer" class="blocks-grid"></div>
       </section>
     </main>
+
+    <dialog id="blockDialog" class="form-dialog">
+      <div class="dialog-head">
+        <h2 id="blockDialogTitle">Block Form</h2>
+        <button
+          id="closeBlockDialogBtn"
+          type="button"
+          class="icon-btn"
+          aria-label="Close block form"
+          title="Close"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M18.3 5.7L12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"
+            />
+          </svg>
+        </button>
+      </div>
+      <div id="blockFormError" class="error-banner" style="display: none"></div>
+      <form id="blockForm">
+        <input type="hidden" name="block_id" />
+        <label>Country <input name="country" required /></label>
+        <label>Year <input name="year" /></label>
+        <label>Title <input name="title" /></label>
+        <label
+          >Nr of stamps <input name="nr_of_stamps" type="number" min="0"
+        /></label>
+        <label>Starting stamp <input name="starting_stamp" /></label>
+        <label
+          >Next block starting stamp <input name="next_block_starting_stamp"
+        /></label>
+        <div class="actions">
+          <button type="submit">Save Block</button>
+          <button type="button" id="cancelBlockBtn">Cancel</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="stampDialog" class="form-dialog">
+      <div class="dialog-head">
+        <h2 id="stampDialogTitle">Stamp Form</h2>
+        <button
+          id="closeStampDialogBtn"
+          type="button"
+          class="icon-btn"
+          aria-label="Close stamp form"
+          title="Close"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M18.3 5.7L12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"
+            />
+          </svg>
+        </button>
+      </div>
+      <form id="stampForm">
+        <div
+          id="stampFormError"
+          class="error-banner"
+          style="display: none"
+        ></div>
+        <input type="hidden" name="stamp_id" />
+        <label
+          >Block
+          <select name="block_id" required id="stampBlockSelect"></select>
+        </label>
+        <label>Catalog number <input name="catalog_number" required /></label>
+        <label>NVPH number <input name="nvph_number" /></label>
+        <label>Denomination <input name="denomination" /></label>
+        <label>Color <input name="color" /></label>
+        <label>Height <input name="height" type="number" step="0.1" /></label>
+        <label>Width <input name="width" type="number" step="0.1" /></label>
+        <label
+          >Image path
+          <input name="image_path" placeholder="images/stamps/example.jpg"
+        /></label>
+        <label>Type <input name="stamp_type" /></label>
+        <div class="actions">
+          <button type="submit">Save Stamp</button>
+          <button type="button" id="cancelStampBtn">Cancel</button>
+        </div>
+      </form>
+    </dialog>
 
     <template id="stampCardTemplate">
       <article class="stamp-card" draggable="true">

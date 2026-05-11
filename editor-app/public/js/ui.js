@@ -11,15 +11,48 @@ function el(selector) {
 
 const blocksContainer = el("#blocksContainer");
 const stampCardTemplate = el("#stampCardTemplate");
+const blockDialog = el("#blockDialog");
+const stampDialog = el("#stampDialog");
 const blockForm = el("#blockForm");
 const stampForm = el("#stampForm");
 const stampBlockSelect = el("#stampBlockSelect");
+const addBlockBtn = document.getElementById("addBlockBtn");
 const blockFormError = document.getElementById("blockFormError");
 const stampFormError = document.getElementById("stampFormError");
 const stampSearchInput = document.getElementById("stampSearchInput");
 const toggleCollapseAllBtn = document.getElementById("toggleCollapseAllBtn");
+const closeBlockDialogBtn = document.getElementById("closeBlockDialogBtn");
+const closeStampDialogBtn = document.getElementById("closeStampDialogBtn");
+const cancelBlockBtn = document.getElementById("cancelBlockBtn");
+const cancelStampBtn = document.getElementById("cancelStampBtn");
 let currentSearch = "";
 const collapsedBlockIds = new Set();
+
+function openDialog(dialog) {
+  if (!dialog.open) {
+    dialog.showModal();
+  }
+}
+
+export function openBlockDialog() {
+  openDialog(blockDialog);
+}
+
+export function openStampDialog() {
+  openDialog(stampDialog);
+}
+
+export function closeBlockDialog() {
+  if (blockDialog.open) {
+    blockDialog.close();
+  }
+}
+
+export function closeStampDialog() {
+  if (stampDialog.open) {
+    stampDialog.close();
+  }
+}
 
 export function setBlockFormError(msg) {
   if (msg) {
@@ -106,10 +139,14 @@ export function resetStampForm(defaults = {}) {
 
 export function bindStaticEvents(handlers) {
   el("#refreshBtn").addEventListener("click", handlers.onRefresh);
-  el("#newBlockBtn").addEventListener("click", handlers.onNewBlock);
-  el("#newStampBtn").addEventListener("click", handlers.onNewStamp);
+  addBlockBtn.addEventListener("click", handlers.onNewBlock);
   blockForm.addEventListener("submit", handlers.onSubmitBlock);
   stampForm.addEventListener("submit", handlers.onSubmitStamp);
+
+  closeBlockDialogBtn.addEventListener("click", closeBlockDialog);
+  closeStampDialogBtn.addEventListener("click", closeStampDialog);
+  cancelBlockBtn.addEventListener("click", closeBlockDialog);
+  cancelStampBtn.addEventListener("click", closeStampDialog);
 }
 
 function blockHeaderText(block) {
