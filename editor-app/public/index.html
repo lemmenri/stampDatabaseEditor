@@ -21,6 +21,7 @@
           <h2>Blocks</h2>
           <div class="blocks-toolbar-actions">
             <button id="addBlockBtn" type="button">Add</button>
+            <button id="filterToggleBtn" type="button">Filters</button>
             <button id="toggleCollapseAllBtn" type="button">
               Collapse All
             </button>
@@ -30,13 +31,115 @@
           Drag stamps between blocks. Click a stamp or block to edit details in
           the forms.
         </p>
-        <div class="search-bar">
-          <input
-            id="stampSearchInput"
-            type="search"
-            placeholder="Search catalog number..."
-            autocomplete="off"
-          />
+        <div id="filterPanel" class="filter-panel" hidden>
+          <div class="filter-grid">
+            <label class="filter-field"
+              >Year after
+              <input
+                id="filterYearAfter"
+                type="number"
+                placeholder="e.g. 1900"
+                min="1800"
+                max="2100"
+                autocomplete="off"
+              />
+            </label>
+            <label class="filter-field"
+              >Year before
+              <input
+                id="filterYearBefore"
+                type="number"
+                placeholder="e.g. 2000"
+                min="1800"
+                max="2100"
+                autocomplete="off"
+              />
+            </label>
+            <label class="filter-field"
+              >Catalog number
+              <input
+                id="filterCatalogNumber"
+                type="search"
+                placeholder="Search..."
+                autocomplete="off"
+              />
+            </label>
+            <label class="filter-field"
+              >NVPH number
+              <input
+                id="filterNvphNumber"
+                type="search"
+                placeholder="Search..."
+                autocomplete="off"
+              />
+            </label>
+            <label class="filter-field"
+              >Block name
+              <input
+                id="filterBlockName"
+                type="search"
+                placeholder="Search..."
+                autocomplete="off"
+              />
+            </label>
+            <label class="filter-field"
+              >Color
+              <input
+                id="filterColor"
+                type="search"
+                placeholder="Search..."
+                autocomplete="off"
+              />
+            </label>
+            <label class="filter-field"
+              >Denomination
+              <input
+                id="filterDenomination"
+                type="search"
+                placeholder="Search..."
+                autocomplete="off"
+              />
+            </label>
+            <label class="filter-field"
+              >Width
+              <div class="filter-field-row">
+                <input
+                  id="filterWidth"
+                  type="number"
+                  step="0.1"
+                  placeholder="e.g. 25"
+                  autocomplete="off"
+                />
+                <label class="filter-inline-check"
+                  ><input id="filterWidthMissing" type="checkbox" /> Missing
+                  only</label
+                >
+              </div>
+            </label>
+            <label class="filter-field"
+              >Height
+              <div class="filter-field-row">
+                <input
+                  id="filterHeight"
+                  type="number"
+                  step="0.1"
+                  placeholder="e.g. 30"
+                  autocomplete="off"
+                />
+                <label class="filter-inline-check"
+                  ><input id="filterHeightMissing" type="checkbox" /> Missing
+                  only</label
+                >
+              </div>
+            </label>
+            <label class="filter-field filter-field--checkbox">
+              <input id="filterMissingImages" type="checkbox" /> Missing images
+              only
+            </label>
+          </div>
+          <div class="filter-actions">
+            <button id="clearFiltersBtn" type="button">Clear filters</button>
+          </div>
         </div>
         <div id="blocksContainer" class="blocks-grid"></div>
       </section>

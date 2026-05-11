@@ -20,14 +20,187 @@ const addBlockBtn = document.getElementById("addBlockBtn");
 const exportJsonBtn = document.getElementById("exportJsonBtn");
 const blockFormError = document.getElementById("blockFormError");
 const stampFormError = document.getElementById("stampFormError");
-const stampSearchInput = document.getElementById("stampSearchInput");
 const toggleCollapseAllBtn = document.getElementById("toggleCollapseAllBtn");
 const closeBlockDialogBtn = document.getElementById("closeBlockDialogBtn");
 const closeStampDialogBtn = document.getElementById("closeStampDialogBtn");
 const cancelBlockBtn = document.getElementById("cancelBlockBtn");
 const cancelStampBtn = document.getElementById("cancelStampBtn");
-let currentSearch = "";
 const collapsedBlockIds = new Set();
+
+const defaultFilter = () => ({
+  yearAfter: null,
+  yearBefore: null,
+  catalogNumber: "",
+  nvphNumber: "",
+  blockName: "",
+  color: "",
+  denomination: "",
+  width: null,
+  widthMissing: false,
+  height: null,
+  heightMissing: false,
+  missingImages: false,
+});
+let currentFilter = defaultFilter();
+
+function parseYears(yearStr) {
+  if (!yearStr) return [];
+  return (String(yearStr).match(/\d{4}/g) || []).map(Number);
+}
+
+function blockPassesFilter(f, block) {
+  if (f.yearBefore !== null) {
+    const years = parseYears(block.year);
+    if (!years.length || Math.min(...years) >= f.yearBefore) return false;
+  }
+  if (f.yearAfter !== null) {
+    const years = parseYears(block.year);
+    if (!years.length || Math.max(...years) <= f.yearAfter) return false;
+  }
+  if (f.blockName) {
+    if (!(block.title || "").toLowerCase().includes(f.blockName.toLowerCase()))
+      return false;
+  }
+  return true;
+}
+
+function stampPassesFilter(f, stamp) {
+  if (
+    f.catalogNumber &&
+    !(stamp.catalog_number || "")
+      .toLowerCase()
+      .includes(f.catalogNumber.toLowerCase())
+  )
+    return false;
+  if (
+    f.nvphNumber &&
+    !(stamp.nvph_number || "")
+      .toLowerCase()
+      .includes(f.nvphNumber.toLowerCase())
+  )
+    return false;
+  if (
+    f.color &&
+    !(stamp.color || "").toLowerCase().includes(f.color.toLowerCase())
+  )
+    return false;
+  if (
+    f.denomination &&
+    !(stamp.denomination || "")
+      .toLowerCase()
+      .includes(f.denomination.toLowerCase())
+  )
+    return false;
+  if (f.widthMissing) {
+    if (Number(stamp.width) > 0) return false;
+  } else if (f.width !== null) {
+    if (Number(stamp.width) !== f.width) return false;
+  }
+  if (f.heightMissing) {
+    if (Number(stamp.height) > 0) return false;
+  } else if (f.height !== null) {
+    if (Number(stamp.height) !== f.height) return false;
+  }
+  if (f.missingImages) {
+    if (stamp.image_url || stamp.image_path) return false;
+  }
+  return true;
+}
+
+function hasStampLevelFilter(f) {
+  return !!(
+    f.catalogNumber ||
+    f.nvphNumber ||
+    f.color ||
+    f.denomination ||
+    f.width !== null ||
+    f.widthMissing ||
+    f.height !== null ||
+    f.heightMissing ||
+    f.missingImages
+  );
+}
+
+function countActiveFilters(f) {
+  let n = 0;
+  if (f.yearAfter !== null) n++;
+  if (f.yearBefore !== null) n++;
+  if (f.catalogNumber) n++;
+  if (f.nvphNumber) n++;
+  if (f.blockName) n++;
+  if (f.color) n++;
+  if (f.denomination) n++;
+  if (f.width !== null) n++;
+  if (f.widthMissing) n++;
+  if (f.height !== null) n++;
+  if (f.heightMissing) n++;
+  if (f.missingImages) n++;
+  return n;
+}
+
+export function bindFilterPanel(onFilterChange) {
+  const filterToggleBtn = document.getElementById("filterToggleBtn");
+  const filterPanel = document.getElementById("filterPanel");
+  const clearFiltersBtn = document.getElementById("clearFiltersBtn");
+
+  function updateToggleLabel() {
+    const n = countActiveFilters(currentFilter);
+    filterToggleBtn.textContent = n > 0 ? `Filters (${n})` : "Filters";
+    filterToggleBtn.classList.toggle("filter-btn--active", n > 0);
+  }
+
+  function readAndApply() {
+    currentFilter = {
+      yearAfter: filterPanel.querySelector("#filterYearAfter").value
+        ? Number(filterPanel.querySelector("#filterYearAfter").value)
+        : null,
+      yearBefore: filterPanel.querySelector("#filterYearBefore").value
+        ? Number(filterPanel.querySelector("#filterYearBefore").value)
+        : null,
+      catalogNumber: filterPanel
+        .querySelector("#filterCatalogNumber")
+        .value.trim(),
+      nvphNumber: filterPanel.querySelector("#filterNvphNumber").value.trim(),
+      blockName: filterPanel.querySelector("#filterBlockName").value.trim(),
+      color: filterPanel.querySelector("#filterColor").value.trim(),
+      denomination: filterPanel
+        .querySelector("#filterDenomination")
+        .value.trim(),
+      width: filterPanel.querySelector("#filterWidth").value
+        ? Number(filterPanel.querySelector("#filterWidth").value)
+        : null,
+      widthMissing: filterPanel.querySelector("#filterWidthMissing").checked,
+      height: filterPanel.querySelector("#filterHeight").value
+        ? Number(filterPanel.querySelector("#filterHeight").value)
+        : null,
+      heightMissing: filterPanel.querySelector("#filterHeightMissing").checked,
+      missingImages: filterPanel.querySelector("#filterMissingImages").checked,
+    };
+    updateToggleLabel();
+    onFilterChange();
+  }
+
+  filterToggleBtn.addEventListener("click", () => {
+    filterPanel.hidden = !filterPanel.hidden;
+  });
+
+  clearFiltersBtn.addEventListener("click", () => {
+    filterPanel
+      .querySelectorAll("input[type='number'], input[type='search']")
+      .forEach((input) => {
+        input.value = "";
+      });
+    filterPanel.querySelectorAll("input[type='checkbox']").forEach((input) => {
+      input.checked = false;
+    });
+    readAndApply();
+  });
+
+  filterPanel.querySelectorAll("input").forEach((input) => {
+    input.addEventListener("input", readAndApply);
+    input.addEventListener("change", readAndApply);
+  });
+}
 
 function openDialog(dialog) {
   if (!dialog.open) {
@@ -73,14 +246,6 @@ export function setStampFormError(msg) {
     stampFormError.textContent = "";
     stampFormError.style.display = "none";
   }
-}
-
-export function bindSearchFilter(onSearch) {
-  if (!stampSearchInput) return;
-  stampSearchInput.addEventListener("input", (e) => {
-    currentSearch = e.target.value || "";
-    onSearch(currentSearch);
-  });
 }
 
 export function blockFormData() {
@@ -176,9 +341,9 @@ export function renderBlockSelectOptions() {
   }
 }
 
-export function renderBlocks(handlers, filter) {
+export function renderBlocks(handlers) {
   blocksContainer.innerHTML = "";
-  const search = (filter || currentSearch || "").toLowerCase();
+  const f = currentFilter;
   const existingBlockIds = new Set(appState.blocks.map((b) => b.block_id));
   collapsedBlockIds.forEach((blockId) => {
     if (!existingBlockIds.has(blockId)) {
@@ -213,7 +378,7 @@ export function renderBlocks(handlers, filter) {
           collapsedBlockIds.delete(block.block_id),
         );
       }
-      renderBlocks(handlers, filter);
+      renderBlocks(handlers);
     };
   }
 
@@ -253,6 +418,7 @@ export function renderBlocks(handlers, filter) {
     }
   }
   appState.blocks.forEach((block, blockIdx) => {
+    if (!blockPassesFilter(f, block)) return;
     const isCollapsed = collapsedBlockIds.has(block.block_id);
     const blockNode = document.createElement("section");
     blockNode.className = "block-column";
@@ -355,7 +521,7 @@ export function renderBlocks(handlers, filter) {
       } else {
         collapsedBlockIds.add(block.block_id);
       }
-      renderBlocks(handlers, filter);
+      renderBlocks(handlers);
     });
     const editBtn = document.createElement("button");
     editBtn.innerHTML =
@@ -392,10 +558,9 @@ export function renderBlocks(handlers, filter) {
     stampList.hidden = isCollapsed;
     stampList.dataset.blockId = String(block.block_id);
     let stamps = block.stamps || [];
-    if (search) {
-      stamps = stamps.filter((s) =>
-        (s.catalog_number || "").toLowerCase().includes(search),
-      );
+    if (hasStampLevelFilter(f)) {
+      stamps = stamps.filter((s) => stampPassesFilter(f, s));
+      if (!stamps.length) return;
     }
     stamps.forEach((stamp, stampIdx) => {
       const card = stampCardTemplate.content.firstElementChild.cloneNode(true);

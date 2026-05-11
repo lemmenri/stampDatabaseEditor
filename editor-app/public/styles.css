@@ -48,6 +48,84 @@
   font-size: 1rem;
   background: #f7fafc;
 }
+
+.filter-btn--active {
+  background: var(--accent);
+  color: #fff;
+}
+
+.filter-panel {
+  margin-bottom: 0.9rem;
+  padding: 0.8rem 1rem;
+  background: #f7fafc;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.6rem 1rem;
+  margin-bottom: 0.7rem;
+}
+
+.filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.filter-field input[type="number"],
+.filter-field input[type="search"] {
+  width: 100%;
+  padding: 0.38rem 0.5rem;
+  border-radius: 7px;
+  border: 1px solid var(--line);
+  font-size: 0.9rem;
+  background: #fff;
+  font-weight: 400;
+}
+
+.filter-field--checkbox {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 400;
+}
+
+.filter-field-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filter-field-row input[type="number"] {
+  flex: 1;
+  min-width: 0;
+  padding: 0.38rem 0.5rem;
+  border-radius: 7px;
+  border: 1px solid var(--line);
+  font-size: 0.9rem;
+  background: #fff;
+}
+
+.filter-inline-check {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+  font-weight: 400;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.filter-actions {
+  display: flex;
+  justify-content: flex-end;
+}
 :root {
   --bg: #f2f4f7;
   --panel: #ffffff;

@@ -24,18 +24,17 @@ import {
   stampFormData,
   setBlockFormError,
   setStampFormError,
-  bindSearchFilter,
+  bindFilterPanel,
 } from "./ui.js";
 
-let lastSearch = "";
-async function loadData(search = "") {
+async function loadData() {
   setBlockFormError("");
   setStampFormError("");
   try {
     const payload = await fetchBlocks();
     setBlocks(payload.blocks || []);
     renderBlockSelectOptions();
-    renderBlocks(handlers, search);
+    renderBlocks(handlers);
   } catch (e) {
     setBlockFormError("Failed to load data: " + e.message);
   }
@@ -106,7 +105,7 @@ const handlers = {
       return;
     try {
       await deleteBlock(block.block_id);
-      await loadData(lastSearch);
+      await loadData();
       resetBlockForm({});
       resetStampForm({ block_id: firstBlockId() });
     } catch (e) {
@@ -127,7 +126,7 @@ const handlers = {
         await createBlock(data);
         notify("Block created", "block");
       }
-      await loadData(lastSearch);
+      await loadData();
       closeBlockDialog();
     } catch (e) {
       setBlockFormError(e.message);
@@ -146,7 +145,7 @@ const handlers = {
       return;
     try {
       await deleteStamp(stamp.stamp_id);
-      await loadData(lastSearch);
+      await loadData();
     } catch (e) {
       setStampFormError(e.message);
     }
@@ -169,7 +168,7 @@ const handlers = {
         await createStamp(data);
         notify("Stamp created", "stamp");
       }
-      await loadData(lastSearch);
+      await loadData();
       closeStampDialog();
     } catch (e) {
       setStampFormError(e.message);
@@ -186,7 +185,7 @@ const handlers = {
     }
     try {
       await moveStamp(stampId, targetBlockId);
-      await loadData(lastSearch);
+      await loadData();
     } catch (e) {
       setBlockFormError(e.message);
     }
@@ -194,10 +193,7 @@ const handlers = {
 };
 
 bindStaticEvents(handlers);
-bindSearchFilter((search) => {
-  lastSearch = search;
-  renderBlocks(handlers, search);
-});
+bindFilterPanel(() => renderBlocks(handlers));
 
 loadData()
   .then(() => {
