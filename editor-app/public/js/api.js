@@ -20,12 +20,13 @@ const jsonHeaders = {
 async function request(url, options = {}) {
   const response = await fetch(url, options);
   if (!response.ok) {
+    const bodyText = await response.text();
     let detail = "";
     try {
-      const err = await response.json();
+      const err = bodyText ? JSON.parse(bodyText) : {};
       detail = err.error || JSON.stringify(err);
     } catch {
-      detail = await response.text();
+      detail = bodyText;
     }
     throw new Error(`${response.status} ${response.statusText} - ${detail}`);
   }

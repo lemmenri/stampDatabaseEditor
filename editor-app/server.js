@@ -8,9 +8,73 @@ const ROOT = path.resolve(__dirname, "..");
 const dbPath = path.join(ROOT, "stamps.db");
 const db = new Database(dbPath);
 
+db.pragma("foreign_keys = ON");
+
 app.use(express.json());
 app.use("/images", express.static(path.join(ROOT, "images")));
 app.use(express.static(path.join(__dirname, "public")));
+
+function ensureStampsForeignKeyTargetsBlocks() {
+  const foreignKeys = db.prepare("PRAGMA foreign_key_list(stamps)").all();
+  const hasBrokenBlocksReference = foreignKeys.some(
+    (row) => row.table === "blocks_old",
+  );
+
+  if (!hasBrokenBlocksReference) {
+    return;
+  }
+
+  const migrate = db.transaction(() => {
+    db.prepare("ALTER TABLE stamps RENAME TO stamps_old").run();
+    db.prepare(
+      `CREATE TABLE stamps (
+        stamp_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        block_id INTEGER,
+        catalog_number TEXT,
+        nvph_number TEXT,
+        denomination TEXT,
+        color TEXT,
+        height REAL,
+        width REAL,
+        image_path TEXT,
+        stamp_type TEXT,
+        stamp_order INTEGER,
+        FOREIGN KEY (block_id) REFERENCES blocks(block_id)
+      )`,
+    ).run();
+    db.prepare(
+      `INSERT INTO stamps (
+        stamp_id,
+        block_id,
+        catalog_number,
+        nvph_number,
+        denomination,
+        color,
+        height,
+        width,
+        image_path,
+        stamp_type,
+        stamp_order
+      )
+      SELECT
+        stamp_id,
+        block_id,
+        catalog_number,
+        nvph_number,
+        denomination,
+        color,
+        height,
+        width,
+        image_path,
+        stamp_type,
+        stamp_order
+      FROM stamps_old`,
+    ).run();
+    db.prepare("DROP TABLE stamps_old").run();
+  });
+
+  migrate();
+}
 
 function normalizeBlockOrders() {
   const rows = db
@@ -119,9 +183,6 @@ function getBlocks() {
         country,
         year,
         title,
-        nr_of_stamps,
-        starting_stamp,
-        next_block_starting_stamp,
         block_order
       FROM blocks
       ORDER BY (block_order IS NULL) ASC, block_order ASC, block_id ASC`,
@@ -139,7 +200,7 @@ function toExportCollection(blocks) {
       metadata: {
         year: block.year || "",
         title: block.title || "",
-        nrOfStamps: String(block.nr_of_stamps ?? 0),
+        nrOfStamps: String(block.stamps?.length ?? 0),
       },
       stamps: (block.stamps || []).map((stamp) => {
         let image = (stamp.image_path || "").replace(/\\/g, "/");
@@ -161,8 +222,9 @@ function toExportCollection(blocks) {
           type: stamp.stamp_type || "",
         };
       }),
-      startingStamp: block.starting_stamp || "",
-      nextBlockStartingStamp: block.next_block_starting_stamp || "",
+      startingStamp: block.stamps?.[0]?.catalog_number || "",
+      nextBlockStartingStamp:
+        block.stamps?.[block.stamps.length - 1]?.catalog_number || "",
     })),
   };
 }
@@ -210,10 +272,7 @@ function updateBlockStampCounts(blockId) {
     .prepare("SELECT COUNT(*) AS count FROM stamps WHERE block_id = ?")
     .get(blockId);
 
-  db.prepare("UPDATE blocks SET nr_of_stamps = ? WHERE block_id = ?").run(
-    row.count,
-    blockId,
-  );
+  // removed: update nr_of_stamps
 }
 
 app.get("/api/blocks", (req, res) => {
@@ -228,29 +287,14 @@ app.get("/api/export/json", (req, res) => {
 });
 
 app.post("/api/blocks", (req, res) => {
-  const {
-    country,
-    year,
-    title,
-    nr_of_stamps,
-    starting_stamp,
-    next_block_starting_stamp,
-  } = req.body;
+  const { country, year, title } = req.body;
 
   const result = db
     .prepare(
-      `INSERT INTO blocks (country, year, title, nr_of_stamps, starting_stamp, next_block_starting_stamp, block_order)
-       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO blocks (country, year, title, block_order)
+       VALUES (?, ?, ?, ?)`,
     )
-    .run(
-      country || "",
-      year || "",
-      title || "",
-      Number(nr_of_stamps || 0),
-      starting_stamp || "",
-      next_block_starting_stamp || "",
-      nextBlockOrder(),
-    );
+    .run(country || "", year || "", title || "", nextBlockOrder());
 
   const created = db
     .prepare(
@@ -258,10 +302,7 @@ app.post("/api/blocks", (req, res) => {
         block_id,
         country,
         year,
-        title,
-        nr_of_stamps,
-        starting_stamp,
-        next_block_starting_stamp
+        title
        FROM blocks
        WHERE block_id = ?`,
     )
@@ -272,33 +313,15 @@ app.post("/api/blocks", (req, res) => {
 
 app.put("/api/blocks/:blockId", (req, res) => {
   const blockId = Number(req.params.blockId);
-  const {
-    country,
-    year,
-    title,
-    nr_of_stamps,
-    starting_stamp,
-    next_block_starting_stamp,
-  } = req.body;
+  const { country, year, title } = req.body;
 
   db.prepare(
     `UPDATE blocks
      SET country = ?,
          year = ?,
-         title = ?,
-         nr_of_stamps = ?,
-         starting_stamp = ?,
-         next_block_starting_stamp = ?
+         title = ?
      WHERE block_id = ?`,
-  ).run(
-    country || "",
-    year || "",
-    title || "",
-    Number(nr_of_stamps || 0),
-    starting_stamp || "",
-    next_block_starting_stamp || "",
-    blockId,
-  );
+  ).run(country || "", year || "", title || "", blockId);
 
   const updated = db
     .prepare(
@@ -306,10 +329,7 @@ app.put("/api/blocks/:blockId", (req, res) => {
         block_id,
         country,
         year,
-        title,
-        nr_of_stamps,
-        starting_stamp,
-        next_block_starting_stamp
+        title
        FROM blocks
        WHERE block_id = ?`,
     )
@@ -570,7 +590,9 @@ app.delete("/api/stamps/:stampId", (req, res) => {
   return res.json({ ok: true });
 });
 
-app.listen(PORT, () => {
+ensureStampsForeignKeyTargetsBlocks();
+
+const server = app.listen(PORT, () => {
   normalizeBlockOrders();
   const blockIds = db
     .prepare("SELECT block_id FROM blocks ORDER BY block_id ASC")
@@ -578,3 +600,5 @@ app.listen(PORT, () => {
   blockIds.forEach((row) => normalizeStampOrdersForBlock(row.block_id));
   console.log(`Stamp editor running at http://localhost:${PORT}`);
 });
+
+server.ref();

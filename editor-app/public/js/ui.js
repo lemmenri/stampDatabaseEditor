@@ -255,9 +255,6 @@ export function blockFormData() {
     country: formData.get("country"),
     year: formData.get("year"),
     title: formData.get("title"),
-    nr_of_stamps: Number(formData.get("nr_of_stamps") || 0),
-    starting_stamp: formData.get("starting_stamp"),
-    next_block_starting_stamp: formData.get("next_block_starting_stamp"),
   };
 }
 
@@ -280,13 +277,9 @@ export function stampFormData() {
 export function resetBlockForm(defaults = {}) {
   blockForm.reset();
   blockForm.elements.block_id.value = defaults.block_id ?? "";
-  blockForm.elements.country.value = defaults.country ?? "";
+  blockForm.elements.country.value = defaults.country ?? "Netherlands";
   blockForm.elements.year.value = defaults.year ?? "";
   blockForm.elements.title.value = defaults.title ?? "";
-  blockForm.elements.nr_of_stamps.value = defaults.nr_of_stamps ?? 0;
-  blockForm.elements.starting_stamp.value = defaults.starting_stamp ?? "";
-  blockForm.elements.next_block_starting_stamp.value =
-    defaults.next_block_starting_stamp ?? "";
 }
 
 export function resetStampForm(defaults = {}) {
@@ -500,7 +493,7 @@ export function renderBlocks(handlers) {
     title.textContent = block.title || `Block ${block.block_id}`;
     const meta = document.createElement("p");
     meta.className = "block-meta";
-    meta.textContent = `${blockHeaderText(block)} | ${block.nr_of_stamps} stamps`;
+    meta.textContent = blockHeaderText(block);
     titleWrap.append(title, meta);
     const buttons = document.createElement("div");
     buttons.className = "block-actions";
