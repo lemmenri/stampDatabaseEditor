@@ -94,15 +94,22 @@ const handlers = {
     try {
       const { jsonText, mode } = await importFormData();
       if (!jsonText) {
-        throw new Error("Please provide JSON by file or paste it into the text box.");
+        throw new Error(
+          "Please provide JSON by file or paste it into the text box.",
+        );
       }
       let collection;
       try {
         collection = JSON.parse(jsonText);
       } catch (parseError) {
-        throw new Error("Invalid JSON format. Please check the file or pasted content.");
+        throw new Error(
+          "Invalid JSON format. Please check the file or pasted content.",
+        );
       }
-      if (mode === "replace" && !confirm("Replacing will delete the current collection. Continue?")) {
+      if (
+        mode === "replace" &&
+        !confirm("Replacing will delete the current collection. Continue?")
+      ) {
         return;
       }
       await importJson(collection, mode);

@@ -286,7 +286,9 @@ app.get("/api/export/json", (req, res) => {
 app.post("/api/import/json", (req, res) => {
   const { collection, mode } = req.body || {};
   if (!collection || typeof collection !== "object") {
-    return res.status(400).json({ error: "Missing or invalid collection payload" });
+    return res
+      .status(400)
+      .json({ error: "Missing or invalid collection payload" });
   }
 
   const blocks = Array.isArray(collection.blocks) ? collection.blocks : [];
@@ -308,7 +310,9 @@ app.post("/api/import/json", (req, res) => {
     }
 
     let nextOrder = db
-      .prepare("SELECT COALESCE(MAX(block_order), -1) + 1 AS next_order FROM blocks")
+      .prepare(
+        "SELECT COALESCE(MAX(block_order), -1) + 1 AS next_order FROM blocks",
+      )
       .get().next_order;
 
     for (const [blockIndex, block] of blocks.entries()) {
@@ -318,7 +322,6 @@ app.post("/api/import/json", (req, res) => {
         metadata.title || "",
         nextOrder++,
       ).lastInsertRowid;
-
 
       for (const [stampIndex, stamp] of (block.stamps || []).entries()) {
         let image = stamp.image || "";
@@ -353,7 +356,11 @@ app.post("/api/import/json", (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 
-  res.json({ ok: true, importedBlocks: blocks.length, mode: replaceMode ? "replace" : "add" });
+  res.json({
+    ok: true,
+    importedBlocks: blocks.length,
+    mode: replaceMode ? "replace" : "add",
+  });
 });
 
 app.post("/api/blocks", (req, res) => {
