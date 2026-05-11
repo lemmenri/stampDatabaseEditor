@@ -1,0 +1,108 @@
+{
+  "country": "Netherlands",
+  "blocks": [
+    {
+      "metadata": {
+        "year": "1852",
+        "title": "Willem III",
+        "nrOfStamps": "3"
+      },
+      "stamps": [
+        {
+          "height": 32,
+          "width": 24,
+          "denomination": "5C",
+          "color": "Blauw",
+          "catalogNumber": "1",
+          "nvphNumber": "1",
+          "image": "images/0001.jpg",
+          "type": "A"
+        },
+        {
+          "height": 32,
+          "width": 24,
+          "denomination": "10C",
+          "color": "Rood",
+          "catalogNumber": "2",
+          "nvphNumber": "2",
+          "image": "images/0002.jpg",
+          "type": "A"
+        },
+        {
+          "height": 32,
+          "width": 24,
+          "denomination": "15C",
+          "color": "Oranje",
+          "catalogNumber": "3",
+          "nvphNumber": "3",
+          "image": "images/0003.jpg",
+          "type": "A"
+        }
+      ],
+      "startingStamp": "1",
+      "nextBlockStartingStamp": "4"
+    },
+    {
+      "metadata": {
+        "year": "1864",
+        "title": "Willem III",
+        "nrOfStamps": "3"
+      },
+      "stamps": [
+        {
+          "height": 32,
+          "width": 24,
+          "denomination": "5C",
+          "color": "Blauw",
+          "catalogNumber": "4",
+          "nvphNumber": "4",
+          "image": "images/0004.jpg",
+          "type": "B"
+        },
+        {
+          "height": 24,
+          "width": 32,
+          "denomination": "10C",
+          "color": "Rood",
+          "catalogNumber": "5",
+          "nvphNumber": "5",
+          "image": "images/0005.jpg",
+          "type": "B"
+        },
+        {
+          "height": 32,
+          "width": 24,
+          "denomination": "15C",
+          "color": "Oranje",
+          "catalogNumber": "6",
+          "nvphNumber": "6",
+          "image": "images/0006.jpg",
+          "type": "B"
+        }
+      ],
+      "startingStamp": "4",
+      "nextBlockStartingStamp": "7"
+    },
+    {
+      "metadata": {
+        "year": "2033",
+        "title": "Generate Block 10",
+        "nrOfStamps": "1"
+      },
+      "stamps": [
+        {
+          "height": 24,
+          "width": 36,
+          "denomination": "2+(3)C",
+          "color": "Light green",
+          "catalogNumber": "CAT-0091",
+          "nvphNumber": "91",
+          "image": "images/stamps/block-10-stamp-0091.jpg",
+          "type": "AUI"
+        }
+      ],
+      "startingStamp": "1",
+      "nextBlockStartingStamp": "2"
+    }
+  ]
+}

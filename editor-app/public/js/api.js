@@ -90,3 +90,7 @@ export async function moveStamp(stampId, blockId) {
     body: JSON.stringify({ block_id: blockId }),
   });
 }
+
+export async function fetchExportJson() {
+  return request("/api/export/json");
+}

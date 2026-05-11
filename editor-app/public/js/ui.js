@@ -17,6 +17,7 @@ const blockForm = el("#blockForm");
 const stampForm = el("#stampForm");
 const stampBlockSelect = el("#stampBlockSelect");
 const addBlockBtn = document.getElementById("addBlockBtn");
+const exportJsonBtn = document.getElementById("exportJsonBtn");
 const blockFormError = document.getElementById("blockFormError");
 const stampFormError = document.getElementById("stampFormError");
 const stampSearchInput = document.getElementById("stampSearchInput");
@@ -139,6 +140,7 @@ export function resetStampForm(defaults = {}) {
 
 export function bindStaticEvents(handlers) {
   el("#refreshBtn").addEventListener("click", handlers.onRefresh);
+  exportJsonBtn.addEventListener("click", handlers.onExportJson);
   addBlockBtn.addEventListener("click", handlers.onNewBlock);
   blockForm.addEventListener("submit", handlers.onSubmitBlock);
   stampForm.addEventListener("submit", handlers.onSubmitStamp);

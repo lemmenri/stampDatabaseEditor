@@ -129,6 +129,43 @@ function getBlocks() {
     .all();
   return blocks.map(blockWithStamps);
 }
+
+function toExportCollection(blocks) {
+  const country = blocks.find((block) => block.country)?.country || "";
+
+  return {
+    country,
+    blocks: blocks.map((block) => ({
+      metadata: {
+        year: block.year || "",
+        title: block.title || "",
+        nrOfStamps: String(block.nr_of_stamps ?? 0),
+      },
+      stamps: (block.stamps || []).map((stamp) => {
+        let image = (stamp.image_path || "").replace(/\\/g, "/");
+        if (image.startsWith("/")) {
+          image = image.slice(1);
+        }
+        if (image.startsWith("images/images/")) {
+          image = image.slice("images/".length);
+        }
+
+        return {
+          height: Number(stamp.height || 0),
+          width: Number(stamp.width || 0),
+          denomination: stamp.denomination || "",
+          color: stamp.color || "",
+          catalogNumber: stamp.catalog_number || "",
+          nvphNumber: stamp.nvph_number || "",
+          image,
+          type: stamp.stamp_type || "",
+        };
+      }),
+      startingStamp: block.starting_stamp || "",
+      nextBlockStartingStamp: block.next_block_starting_stamp || "",
+    })),
+  };
+}
 // Update block order
 app.post("/api/blocks/reorder", (req, res) => {
   const { ordered_ids } = req.body;
@@ -181,6 +218,13 @@ function updateBlockStampCounts(blockId) {
 
 app.get("/api/blocks", (req, res) => {
   res.json({ blocks: getBlocks() });
+});
+
+app.get("/api/export/json", (req, res) => {
+  const blocks = getBlocks();
+  const collection = toExportCollection(blocks);
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  res.json(collection);
 });
 
 app.post("/api/blocks", (req, res) => {

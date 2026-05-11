@@ -3,6 +3,7 @@ import {
   createStamp,
   deleteBlock,
   deleteStamp,
+  fetchExportJson,
   fetchBlocks,
   moveStamp,
   updateBlock,
@@ -52,6 +53,25 @@ function notify(message, which = "block") {
 const handlers = {
   onRefresh: async () => {
     await loadData();
+  },
+
+  onExportJson: async () => {
+    try {
+      const collection = await fetchExportJson();
+      const json = JSON.stringify(collection, null, 2);
+      const blob = new Blob([json], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      const dateTag = new Date().toISOString().slice(0, 10);
+      link.download = `collection-export-${dateTag}.json`;
+      document.body.append(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      alert(`Failed to export JSON: ${error.message}`);
+    }
   },
 
   onNewBlock: () => {

@@ -85,6 +85,11 @@ body {
   backdrop-filter: blur(6px);
 }
 
+.topbar-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
 .layout {
   display: block;
   padding: 1rem;
