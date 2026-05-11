@@ -180,9 +180,8 @@ export function bindFilterPanel(onFilterChange) {
       stampCount: filterPanel.querySelector("#filterStampCount").value
         ? Number(filterPanel.querySelector("#filterStampCount").value)
         : null,
-      stampCountOperator: filterPanel.querySelector(
-        "#filterStampCountOperator",
-      ).value,
+      stampCountOperator: filterPanel.querySelector("#filterStampCountOperator")
+        .value,
       color: filterPanel.querySelector("#filterColor").value.trim(),
       denomination: filterPanel
         .querySelector("#filterDenomination")
