@@ -23,6 +23,7 @@ import {
   resetBlockForm,
   resetImportForm,
   resetStampForm,
+  stampFormData,
   importFormData,
   setBlockFormError,
   setImportFormError,

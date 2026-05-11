@@ -24,6 +24,7 @@ db.exec(`
     width REAL,
     image_path TEXT,
     stamp_type TEXT,
+    print INTEGER DEFAULT 0,
     FOREIGN KEY (block_id) REFERENCES blocks(block_id)
   );
 `);
@@ -39,8 +40,8 @@ const insertBlock = db.prepare(`
 `);
 
 const insertStamp = db.prepare(`
-  INSERT INTO stamps (block_id, catalog_number, nvph_number, denomination, color, height, width, image_path, stamp_type)
-  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+  INSERT INTO stamps (block_id, catalog_number, nvph_number, denomination, color, height, width, image_path, stamp_type, print)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 `);
 
 // 5. Run as a Transaction (Much faster and ensures data integrity)
@@ -70,6 +71,7 @@ const migrate = db.transaction((data) => {
           stamp.width,
           relativeImagePath,
           stamp.type,
+          stamp.print ? 1 : 0,
         );
       }
     }

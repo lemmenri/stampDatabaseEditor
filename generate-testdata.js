@@ -50,6 +50,7 @@ function makeStamp(index, blockIndex) {
     nvphNumber: `NVPH-${String(1000 + index)}`,
     image: `images/stamps/block-${String(blockIndex + 1).padStart(2, "0")}-stamp-${String(stampId).padStart(4, "0")}.jpg`,
     type: index % 2 === 0 ? "definitive" : "commemorative",
+    print: index % 3 !== 0,
   };
 }
 

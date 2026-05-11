@@ -301,6 +301,7 @@ export function stampFormData() {
     width: Number(formData.get("width") || 0),
     image_path: formData.get("image_path"),
     stamp_type: formData.get("stamp_type"),
+    print: formData.get("print") === "on",
   };
 }
 
@@ -323,6 +324,7 @@ export function resetStampForm(defaults = {}) {
   stampForm.elements.width.value = defaults.width ?? 0;
   stampForm.elements.image_path.value = defaults.image_path ?? "";
   stampForm.elements.stamp_type.value = defaults.stamp_type ?? "";
+  stampForm.elements.print.checked = defaults.print ?? false;
 }
 
 export function resetImportForm() {

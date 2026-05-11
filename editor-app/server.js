@@ -39,6 +39,7 @@ function ensureStampsForeignKeyTargetsBlocks() {
         image_path TEXT,
         stamp_type TEXT,
         stamp_order INTEGER,
+        print INTEGER DEFAULT 0,
         FOREIGN KEY (block_id) REFERENCES blocks(block_id)
       )`,
     ).run();
@@ -54,7 +55,8 @@ function ensureStampsForeignKeyTargetsBlocks() {
         width,
         image_path,
         stamp_type,
-        stamp_order
+        stamp_order,
+        print
       )
       SELECT
         stamp_id,
@@ -67,13 +69,26 @@ function ensureStampsForeignKeyTargetsBlocks() {
         width,
         image_path,
         stamp_type,
-        stamp_order
+        stamp_order,
+        COALESCE(print, 0)
       FROM stamps_old`,
     ).run();
     db.prepare("DROP TABLE stamps_old").run();
   });
 
   migrate();
+}
+
+function ensureStampPrintColumn() {
+  const columns = db.prepare("PRAGMA table_info(stamps)").all();
+  const hasPrintColumn = columns.some((col) => col.name === "print");
+  if (!hasPrintColumn) {
+    db.prepare("ALTER TABLE stamps ADD COLUMN print INTEGER DEFAULT 0").run();
+  }
+}
+
+function normalizeBoolean(value) {
+  return value === true || value === "true" || value === 1 || value === "1";
 }
 
 function normalizeBlockOrders() {
@@ -158,7 +173,8 @@ function blockWithStamps(block) {
         width,
         image_path,
         stamp_type,
-        stamp_order
+        stamp_order,
+        print
       FROM stamps
       WHERE block_id = ?
       ORDER BY (stamp_order IS NULL) ASC, stamp_order ASC, stamp_id ASC`,
@@ -217,6 +233,7 @@ function toExportCollection(blocks) {
           nvphNumber: stamp.nvph_number || "",
           image,
           type: stamp.stamp_type || "",
+          print: Boolean(stamp.print),
         };
       }),
       startingStamp: block.stamps?.[0]?.catalog_number || "",
@@ -299,8 +316,8 @@ app.post("/api/import/json", (req, res) => {
      VALUES (?, ?, ?)`,
   );
   const insertStampStmt = db.prepare(
-    `INSERT INTO stamps (block_id, catalog_number, nvph_number, denomination, color, height, width, image_path, stamp_type, stamp_order)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO stamps (block_id, catalog_number, nvph_number, denomination, color, height, width, image_path, stamp_type, stamp_order, print)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   );
 
   const tx = db.transaction(() => {
@@ -325,8 +342,11 @@ app.post("/api/import/json", (req, res) => {
 
       for (const [stampIndex, stamp] of (block.stamps || []).entries()) {
         let image = stamp.image || "";
+        if (image !== "") {
+          image = `images/${stamp.catalogNumber}.jpg` || "";
+        }
         if (typeof image === "string") {
-          image = image.replace(/\\\\/g, "/");
+          image = image.replace(/\\\\/g, "/").replace("*", "_");
           if (image.startsWith("/")) {
             image = image.slice(1);
           }
@@ -345,6 +365,7 @@ app.post("/api/import/json", (req, res) => {
           image,
           stamp.type || "",
           stampIndex,
+          normalizeBoolean(stamp.print) ? 1 : 0,
         );
       }
     }
@@ -444,6 +465,7 @@ app.post("/api/stamps", (req, res) => {
     width,
     image_path,
     stamp_type,
+    print,
   } = req.body;
 
   const blockId = Number(block_id);
@@ -458,8 +480,8 @@ app.post("/api/stamps", (req, res) => {
   const result = db
     .prepare(
       `INSERT INTO stamps
-      (block_id, catalog_number, nvph_number, denomination, color, height, width, image_path, stamp_type, stamp_order)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      (block_id, catalog_number, nvph_number, denomination, color, height, width, image_path, stamp_type, stamp_order, print)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     )
     .run(
       blockId,
@@ -472,6 +494,7 @@ app.post("/api/stamps", (req, res) => {
       image_path || "",
       stamp_type || "",
       nextStampOrder(blockId),
+      normalizeBoolean(print) ? 1 : 0,
     );
 
   updateBlockStampCounts(blockId);
@@ -488,7 +511,8 @@ app.post("/api/stamps", (req, res) => {
         height,
         width,
         image_path,
-        stamp_type
+        stamp_type,
+        print
        FROM stamps
        WHERE stamp_id = ?`,
     )
@@ -512,6 +536,7 @@ app.put("/api/stamps/:stampId", (req, res) => {
     width,
     image_path,
     stamp_type,
+    print,
   } = req.body;
 
   const existing = db
@@ -544,7 +569,8 @@ app.put("/api/stamps/:stampId", (req, res) => {
            height = ?,
            width = ?,
            image_path = ?,
-           stamp_type = ?
+           stamp_type = ?,
+           print = ?
        WHERE stamp_id = ?`,
     ).run(
       targetBlockId,
@@ -557,6 +583,7 @@ app.put("/api/stamps/:stampId", (req, res) => {
       Number(width || 0),
       image_path || "",
       stamp_type || "",
+      normalizeBoolean(print) ? 1 : 0,
       stampId,
     );
     normalizeStampOrdersForBlock(existing.block_id);
@@ -572,7 +599,8 @@ app.put("/api/stamps/:stampId", (req, res) => {
            height = ?,
            width = ?,
            image_path = ?,
-           stamp_type = ?
+           stamp_type = ?,
+           print = ?
        WHERE stamp_id = ?`,
     ).run(
       targetBlockId,
@@ -584,6 +612,7 @@ app.put("/api/stamps/:stampId", (req, res) => {
       Number(width || 0),
       image_path || "",
       stamp_type || "",
+      normalizeBoolean(print) ? 1 : 0,
       stampId,
     );
   }
@@ -603,7 +632,8 @@ app.put("/api/stamps/:stampId", (req, res) => {
         height,
         width,
         image_path,
-        stamp_type
+        stamp_type,
+        print
        FROM stamps
        WHERE stamp_id = ?`,
     )
@@ -665,6 +695,7 @@ app.delete("/api/stamps/:stampId", (req, res) => {
 });
 
 ensureStampsForeignKeyTargetsBlocks();
+ensureStampPrintColumn();
 
 const server = app.listen(PORT, () => {
   normalizeBlockOrders();

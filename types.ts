@@ -19,6 +19,7 @@ export type Stamp = {
   nvphNumber: string;
   image: string;
   type: string;
+  print: boolean;
 };
 
 export type BlockMetadata = {
