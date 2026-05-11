@@ -1,5 +1,5 @@
 import { appState, allBlockOptions } from "./state.js";
-import { reorderBlocks, reorderStamps } from "./api.js";
+import { moveStamp, reorderBlocks, reorderStamps } from "./api.js";
 
 function el(selector) {
   const node = document.querySelector(selector);
@@ -17,7 +17,9 @@ const stampBlockSelect = el("#stampBlockSelect");
 const blockFormError = document.getElementById("blockFormError");
 const stampFormError = document.getElementById("stampFormError");
 const stampSearchInput = document.getElementById("stampSearchInput");
+const toggleCollapseAllBtn = document.getElementById("toggleCollapseAllBtn");
 let currentSearch = "";
+const collapsedBlockIds = new Set();
 
 export function setBlockFormError(msg) {
   if (msg) {
@@ -115,7 +117,11 @@ function blockHeaderText(block) {
 }
 
 function stampMetaText(stamp) {
-  return [stamp.denomination, stamp.color, stamp.stamp_type]
+  const size =
+    Number(stamp.width) > 0 && Number(stamp.height) > 0
+      ? `${stamp.width} x ${stamp.height}`
+      : "size n/a";
+  return [stamp.denomination, stamp.color, stamp.stamp_type, size]
     .filter(Boolean)
     .join(" | ");
 }
@@ -134,34 +140,94 @@ export function renderBlockSelectOptions() {
 export function renderBlocks(handlers, filter) {
   blocksContainer.innerHTML = "";
   const search = (filter || currentSearch || "").toLowerCase();
+  const existingBlockIds = new Set(appState.blocks.map((b) => b.block_id));
+  collapsedBlockIds.forEach((blockId) => {
+    if (!existingBlockIds.has(blockId)) {
+      collapsedBlockIds.delete(blockId);
+    }
+  });
+
+  if (toggleCollapseAllBtn) {
+    const hasBlocks = appState.blocks.length > 0;
+    const allCollapsed =
+      hasBlocks &&
+      appState.blocks.every((block) => collapsedBlockIds.has(block.block_id));
+    toggleCollapseAllBtn.disabled = !hasBlocks;
+    toggleCollapseAllBtn.textContent = allCollapsed
+      ? "Expand All"
+      : "Collapse All";
+    toggleCollapseAllBtn.title = allCollapsed
+      ? "Expand all blocks"
+      : "Collapse all blocks";
+    toggleCollapseAllBtn.onclick = () => {
+      if (!appState.blocks.length) return;
+
+      const shouldCollapseAll = appState.blocks.some(
+        (block) => !collapsedBlockIds.has(block.block_id),
+      );
+      if (shouldCollapseAll) {
+        appState.blocks.forEach((block) =>
+          collapsedBlockIds.add(block.block_id),
+        );
+      } else {
+        appState.blocks.forEach((block) =>
+          collapsedBlockIds.delete(block.block_id),
+        );
+      }
+      renderBlocks(handlers, filter);
+    };
+  }
+
   // --- BLOCK DRAGGABLES ---
   let dragBlockId = null;
   let dragOverBlockId = null;
   let dragStampId = null;
-  let dragOverStampId = null;
-  let dragOverStampBlockId = null;
+  let dragStampSourceBlockId = null;
+  const dropIndicator = document.createElement("div");
+  dropIndicator.className = "stamp-drop-indicator";
   // Helper to trigger block reorder
   async function handleBlockDrop() {
     const ids = Array.from(blocksContainer.children).map((el) =>
       Number(el.dataset.blockId),
     );
-    await reorderBlocks(ids);
+    try {
+      await reorderBlocks(ids);
+      setBlockFormError("");
+      return true;
+    } catch (error) {
+      setBlockFormError(`Failed to save block order: ${error.message}`);
+      return false;
+    }
   }
   // Helper to trigger stamp reorder
   async function handleStampDrop(blockId, stampList) {
     const ids = Array.from(stampList.children).map((el) =>
       Number(el.dataset.stampId),
     );
-    await reorderStamps(blockId, ids);
+    try {
+      await reorderStamps(blockId, ids);
+      setStampFormError("");
+      return true;
+    } catch (error) {
+      setStampFormError(`Failed to save stamp order: ${error.message}`);
+      return false;
+    }
   }
   appState.blocks.forEach((block, blockIdx) => {
+    const isCollapsed = collapsedBlockIds.has(block.block_id);
     const blockNode = document.createElement("section");
     blockNode.className = "block-column";
+    if (isCollapsed) {
+      blockNode.classList.add("is-collapsed");
+    }
     blockNode.dataset.blockId = String(block.block_id);
     blockNode.draggable = true;
 
     // Block drag events
     blockNode.addEventListener("dragstart", (e) => {
+      if (e.target !== blockNode || dragStampId !== null) {
+        return;
+      }
       dragBlockId = block.block_id;
       e.dataTransfer.effectAllowed = "move";
       e.dataTransfer.setData("block-id", String(block.block_id));
@@ -180,7 +246,11 @@ export function renderBlocks(handlers, filter) {
       dragOverBlockId = null;
     });
     blockNode.addEventListener("dragover", (e) => {
-      if (dragBlockId !== null && dragBlockId !== block.block_id) {
+      if (
+        dragStampId === null &&
+        dragBlockId !== null &&
+        dragBlockId !== block.block_id
+      ) {
         e.preventDefault();
         blockNode.classList.add("drag-over-block");
         dragOverBlockId = block.block_id;
@@ -191,7 +261,11 @@ export function renderBlocks(handlers, filter) {
     });
     blockNode.addEventListener("drop", async (e) => {
       blockNode.classList.remove("drag-over-block");
-      if (dragBlockId !== null && dragBlockId !== block.block_id) {
+      if (
+        dragStampId === null &&
+        dragBlockId !== null &&
+        dragBlockId !== block.block_id
+      ) {
         // Move block in DOM
         const children = Array.from(blocksContainer.children);
         const fromIdx = children.findIndex(
@@ -224,27 +298,59 @@ export function renderBlocks(handlers, filter) {
     meta.textContent = `${blockHeaderText(block)} | ${block.nr_of_stamps} stamps`;
     titleWrap.append(title, meta);
     const buttons = document.createElement("div");
+    buttons.className = "block-actions";
+    const collapseBtn = document.createElement("button");
+    collapseBtn.innerHTML =
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+    collapseBtn.type = "button";
+    collapseBtn.className = "icon-btn collapse-toggle";
+    if (isCollapsed) {
+      collapseBtn.classList.add("is-collapsed");
+    }
+    collapseBtn.title = isCollapsed ? "Expand block" : "Collapse block";
+    collapseBtn.setAttribute("aria-label", collapseBtn.title);
+    collapseBtn.setAttribute("aria-expanded", String(!isCollapsed));
+    collapseBtn.addEventListener("click", () => {
+      if (collapsedBlockIds.has(block.block_id)) {
+        collapsedBlockIds.delete(block.block_id);
+      } else {
+        collapsedBlockIds.add(block.block_id);
+      }
+      renderBlocks(handlers, filter);
+    });
     const editBtn = document.createElement("button");
-    editBtn.textContent = "Edit";
+    editBtn.innerHTML =
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4l10.3-10.3-4-4L4 16v4zm13.7-13.7 1.4-1.4a1 1 0 0 1 1.4 0l1.2 1.2a1 1 0 0 1 0 1.4l-1.4 1.4-2.6-2.6z"/></svg>';
     editBtn.type = "button";
+    editBtn.className = "icon-btn";
+    editBtn.title = "Edit block";
+    editBtn.setAttribute("aria-label", "Edit block");
     editBtn.addEventListener("click", () => handlers.onSelectBlock(block));
     const addStampBtn = document.createElement("button");
-    addStampBtn.textContent = "Add Stamp";
+    addStampBtn.innerHTML =
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5h2v14h-2zM5 11h14v2H5z"/></svg>';
     addStampBtn.type = "button";
+    addStampBtn.className = "icon-btn";
+    addStampBtn.title = "Add stamp";
+    addStampBtn.setAttribute("aria-label", "Add stamp");
     addStampBtn.addEventListener("click", () =>
       handlers.onCreateStampInBlock(block),
     );
     const removeBtn = document.createElement("button");
-    removeBtn.textContent = "Remove";
+    removeBtn.innerHTML =
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6l1 2h4v2H4V5h4l1-2zm1 6h2v9h-2V9zm4 0h2v9h-2V9zM7 9h2v9H7V9z"/></svg>';
     removeBtn.type = "button";
-    removeBtn.className = "danger";
+    removeBtn.className = "danger icon-btn";
+    removeBtn.title = "Remove block";
+    removeBtn.setAttribute("aria-label", "Remove block");
     removeBtn.addEventListener("click", () => handlers.onDeleteBlock(block));
-    buttons.append(editBtn, addStampBtn, removeBtn);
+    buttons.append(collapseBtn, editBtn, addStampBtn, removeBtn);
     head.append(titleWrap, buttons);
 
     // --- STAMP DRAGGABLES ---
     const stampList = document.createElement("div");
     stampList.className = "stamp-list";
+    stampList.hidden = isCollapsed;
     stampList.dataset.blockId = String(block.block_id);
     let stamps = block.stamps || [];
     if (search) {
@@ -258,57 +364,36 @@ export function renderBlocks(handlers, filter) {
       card.draggable = true;
       // Stamp drag events
       card.addEventListener("dragstart", (event) => {
+        event.stopPropagation();
         dragStampId = stamp.stamp_id;
-        dragOverStampBlockId = block.block_id;
+        dragStampSourceBlockId = block.block_id;
         event.dataTransfer.effectAllowed = "move";
         event.dataTransfer.setData("stamp-id", String(stamp.stamp_id));
+
+        // Ensure block drag state cannot linger when dragging stamps.
+        dragBlockId = null;
+        dragOverBlockId = null;
+        blocksContainer
+          .querySelectorAll(".block-column")
+          .forEach((node) =>
+            node.classList.remove("dragging", "drag-over-block"),
+          );
+
         card.classList.add("dragging");
       });
       card.addEventListener("dragend", async (event) => {
+        event.stopPropagation();
         card.classList.remove("dragging");
-        if (
-          dragStampId !== null &&
-          dragOverStampId !== null &&
-          dragOverStampBlockId === block.block_id
-        ) {
-          await handleStampDrop(block.block_id, stampList);
+        if (dropIndicator.parentElement) {
+          dropIndicator.parentElement.removeChild(dropIndicator);
         }
-        dragStampId = null;
-        dragOverStampId = null;
-        dragOverStampBlockId = null;
-      });
-      card.addEventListener("dragover", (event) => {
-        if (dragStampId !== null && dragStampId !== stamp.stamp_id) {
-          event.preventDefault();
-          card.classList.add("drag-over-stamp");
-          dragOverStampId = stamp.stamp_id;
-        }
-      });
-      card.addEventListener("dragleave", (event) => {
-        card.classList.remove("drag-over-stamp");
-      });
-      card.addEventListener("drop", async (event) => {
-        card.classList.remove("drag-over-stamp");
-        if (dragStampId !== null && dragStampId !== stamp.stamp_id) {
-          // Move card in DOM
-          const children = Array.from(stampList.children);
-          const fromIdx = children.findIndex(
-            (el) => Number(el.dataset.stampId) === dragStampId,
+        blocksContainer
+          .querySelectorAll(".block-column")
+          .forEach((node) =>
+            node.classList.remove("dragging", "drag-over-block"),
           );
-          const toIdx = children.findIndex(
-            (el) => Number(el.dataset.stampId) === stamp.stamp_id,
-          );
-          if (fromIdx !== -1 && toIdx !== -1) {
-            stampList.insertBefore(
-              children[fromIdx],
-              toIdx > fromIdx ? children[toIdx].nextSibling : children[toIdx],
-            );
-          }
-          await handleStampDrop(block.block_id, stampList);
-        }
         dragStampId = null;
-        dragOverStampId = null;
-        dragOverStampBlockId = null;
+        dragStampSourceBlockId = null;
       });
 
       // ...existing code for image, text, and events...
@@ -334,6 +419,34 @@ export function renderBlocks(handlers, filter) {
       if (dragStampId !== null) {
         event.preventDefault();
         stampList.classList.add("drag-over");
+
+        const targetCard = event.target.closest(".stamp-card");
+        if (targetCard && targetCard.parentElement === stampList) {
+          const targetRect = targetCard.getBoundingClientRect();
+          const insertBeforeTarget =
+            event.clientY < targetRect.top + targetRect.height / 2;
+          stampList.insertBefore(
+            dropIndicator,
+            insertBeforeTarget ? targetCard : targetCard.nextSibling,
+          );
+          return;
+        }
+
+        const cards = Array.from(stampList.querySelectorAll(".stamp-card"));
+        if (!cards.length) {
+          stampList.append(dropIndicator);
+          return;
+        }
+
+        const firstCard = cards[0];
+        const lastCard = cards[cards.length - 1];
+        if (event.clientY < firstCard.getBoundingClientRect().top) {
+          stampList.insertBefore(dropIndicator, firstCard);
+          return;
+        }
+        if (event.clientY > lastCard.getBoundingClientRect().bottom) {
+          stampList.append(dropIndicator);
+        }
       }
     });
     stampList.addEventListener("dragleave", () => {
@@ -341,20 +454,62 @@ export function renderBlocks(handlers, filter) {
     });
     stampList.addEventListener("drop", async (event) => {
       stampList.classList.remove("drag-over");
+      let canReorderInTarget = true;
       if (dragStampId !== null) {
-        // Move to end
-        const children = Array.from(stampList.children);
-        const fromIdx = children.findIndex(
-          (el) => Number(el.dataset.stampId) === dragStampId,
+        const targetBlockId = Number(stampList.dataset.blockId);
+        const sourceBlockId = Number(dragStampSourceBlockId);
+        const draggedCard = blocksContainer.querySelector(
+          `.stamp-card[data-stamp-id="${dragStampId}"]`,
         );
-        if (fromIdx !== -1) {
-          stampList.appendChild(children[fromIdx]);
+        const sourceStampList = draggedCard
+          ? draggedCard.closest(".stamp-list")
+          : null;
+        const sourceNextSibling = draggedCard ? draggedCard.nextSibling : null;
+
+        if (draggedCard) {
+          if (dropIndicator.parentElement === stampList) {
+            stampList.insertBefore(draggedCard, dropIndicator);
+          } else {
+            stampList.appendChild(draggedCard);
+          }
         }
-        await handleStampDrop(block.block_id, stampList);
+
+        if (
+          dragStampSourceBlockId !== null &&
+          Number.isFinite(sourceBlockId) &&
+          Number.isFinite(targetBlockId) &&
+          sourceBlockId !== targetBlockId
+        ) {
+          try {
+            await moveStamp(dragStampId, targetBlockId);
+            setStampFormError("");
+          } catch (error) {
+            setStampFormError(`Failed to move stamp: ${error.message}`);
+            canReorderInTarget = false;
+
+            // Restore UI to original location if the backend move failed.
+            if (draggedCard && sourceStampList) {
+              if (
+                sourceNextSibling &&
+                sourceNextSibling.parentElement === sourceStampList
+              ) {
+                sourceStampList.insertBefore(draggedCard, sourceNextSibling);
+              } else {
+                sourceStampList.appendChild(draggedCard);
+              }
+            }
+          }
+        }
+
+        if (draggedCard && canReorderInTarget) {
+          await handleStampDrop(block.block_id, stampList);
+        }
+      }
+      if (dropIndicator.parentElement) {
+        dropIndicator.parentElement.removeChild(dropIndicator);
       }
       dragStampId = null;
-      dragOverStampId = null;
-      dragOverStampBlockId = null;
+      dragStampSourceBlockId = null;
     });
 
     blockNode.append(head, stampList);

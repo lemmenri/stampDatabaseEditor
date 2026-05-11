@@ -12,6 +12,59 @@ app.use(express.json());
 app.use("/images", express.static(path.join(ROOT, "images")));
 app.use(express.static(path.join(__dirname, "public")));
 
+function normalizeBlockOrders() {
+  const rows = db
+    .prepare(
+      `SELECT block_id
+       FROM blocks
+       ORDER BY (block_order IS NULL) ASC, block_order ASC, block_id ASC`,
+    )
+    .all();
+
+  const stmt = db.prepare(
+    "UPDATE blocks SET block_order = ? WHERE block_id = ?",
+  );
+  rows.forEach((row, idx) => {
+    stmt.run(idx, row.block_id);
+  });
+}
+
+function normalizeStampOrdersForBlock(blockId) {
+  const rows = db
+    .prepare(
+      `SELECT stamp_id
+       FROM stamps
+       WHERE block_id = ?
+       ORDER BY (stamp_order IS NULL) ASC, stamp_order ASC, stamp_id ASC`,
+    )
+    .all(blockId);
+
+  const stmt = db.prepare(
+    "UPDATE stamps SET stamp_order = ? WHERE stamp_id = ? AND block_id = ?",
+  );
+  rows.forEach((row, idx) => {
+    stmt.run(idx, row.stamp_id, blockId);
+  });
+}
+
+function nextBlockOrder() {
+  const row = db
+    .prepare(
+      "SELECT COALESCE(MAX(block_order), -1) + 1 AS next_order FROM blocks",
+    )
+    .get();
+  return row.next_order;
+}
+
+function nextStampOrder(blockId) {
+  const row = db
+    .prepare(
+      "SELECT COALESCE(MAX(stamp_order), -1) + 1 AS next_order FROM stamps WHERE block_id = ?",
+    )
+    .get(blockId);
+  return row.next_order;
+}
+
 function normalizeImagePath(imagePath) {
   if (!imagePath) {
     return "";
@@ -44,7 +97,7 @@ function blockWithStamps(block) {
         stamp_order
       FROM stamps
       WHERE block_id = ?
-      ORDER BY stamp_order ASC, stamp_id ASC`,
+      ORDER BY (stamp_order IS NULL) ASC, stamp_order ASC, stamp_id ASC`,
     )
     .all(block.block_id)
     .map((stamp) => ({
@@ -71,7 +124,7 @@ function getBlocks() {
         next_block_starting_stamp,
         block_order
       FROM blocks
-      ORDER BY block_order ASC, block_id ASC`,
+      ORDER BY (block_order IS NULL) ASC, block_order ASC, block_id ASC`,
     )
     .all();
   return blocks.map(blockWithStamps);
@@ -82,12 +135,16 @@ app.post("/api/blocks/reorder", (req, res) => {
   if (!Array.isArray(ordered_ids)) {
     return res.status(400).json({ error: "ordered_ids must be an array" });
   }
-  const stmt = db.prepare(
-    "UPDATE blocks SET block_order = ? WHERE block_id = ?",
-  );
-  ordered_ids.forEach((id, idx) => {
-    stmt.run(idx, id);
+  const tx = db.transaction((ids) => {
+    const stmt = db.prepare(
+      "UPDATE blocks SET block_order = ? WHERE block_id = ?",
+    );
+    ids.forEach((id, idx) => {
+      stmt.run(idx, id);
+    });
+    normalizeBlockOrders();
   });
+  tx(ordered_ids);
   res.json({ ok: true });
 });
 
@@ -98,12 +155,16 @@ app.post("/api/blocks/:blockId/stamps/reorder", (req, res) => {
   if (!Array.isArray(ordered_ids)) {
     return res.status(400).json({ error: "ordered_ids must be an array" });
   }
-  const stmt = db.prepare(
-    "UPDATE stamps SET stamp_order = ? WHERE stamp_id = ? AND block_id = ?",
-  );
-  ordered_ids.forEach((id, idx) => {
-    stmt.run(idx, id, blockId);
+  const tx = db.transaction((ids) => {
+    const stmt = db.prepare(
+      "UPDATE stamps SET stamp_order = ? WHERE stamp_id = ? AND block_id = ?",
+    );
+    ids.forEach((id, idx) => {
+      stmt.run(idx, id, blockId);
+    });
+    normalizeStampOrdersForBlock(blockId);
   });
+  tx(ordered_ids);
   res.json({ ok: true });
 });
 
@@ -134,8 +195,8 @@ app.post("/api/blocks", (req, res) => {
 
   const result = db
     .prepare(
-      `INSERT INTO blocks (country, year, title, nr_of_stamps, starting_stamp, next_block_starting_stamp)
-       VALUES (?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO blocks (country, year, title, nr_of_stamps, starting_stamp, next_block_starting_stamp, block_order)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
     )
     .run(
       country || "",
@@ -144,6 +205,7 @@ app.post("/api/blocks", (req, res) => {
       Number(nr_of_stamps || 0),
       starting_stamp || "",
       next_block_starting_stamp || "",
+      nextBlockOrder(),
     );
 
   const created = db
@@ -258,8 +320,8 @@ app.post("/api/stamps", (req, res) => {
   const result = db
     .prepare(
       `INSERT INTO stamps
-      (block_id, catalog_number, nvph_number, denomination, color, height, width, image_path, stamp_type)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      (block_id, catalog_number, nvph_number, denomination, color, height, width, image_path, stamp_type, stamp_order)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     )
     .run(
       blockId,
@@ -271,6 +333,7 @@ app.post("/api/stamps", (req, res) => {
       Number(width || 0),
       image_path || "",
       stamp_type || "",
+      nextStampOrder(blockId),
     );
 
   updateBlockStampCounts(blockId);
@@ -330,30 +393,62 @@ app.put("/api/stamps/:stampId", (req, res) => {
     return res.status(400).json({ error: "Invalid block_id" });
   }
 
-  db.prepare(
-    `UPDATE stamps
-     SET block_id = ?,
-         catalog_number = ?,
-         nvph_number = ?,
-         denomination = ?,
-         color = ?,
-         height = ?,
-         width = ?,
-         image_path = ?,
-         stamp_type = ?
-     WHERE stamp_id = ?`,
-  ).run(
-    targetBlockId,
-    catalog_number || "",
-    nvph_number || "",
-    denomination || "",
-    color || "",
-    Number(height || 0),
-    Number(width || 0),
-    image_path || "",
-    stamp_type || "",
-    stampId,
-  );
+  const isMovingToAnotherBlock = existing.block_id !== targetBlockId;
+  if (isMovingToAnotherBlock) {
+    db.prepare(
+      `UPDATE stamps
+       SET block_id = ?,
+           stamp_order = ?,
+           catalog_number = ?,
+           nvph_number = ?,
+           denomination = ?,
+           color = ?,
+           height = ?,
+           width = ?,
+           image_path = ?,
+           stamp_type = ?
+       WHERE stamp_id = ?`,
+    ).run(
+      targetBlockId,
+      nextStampOrder(targetBlockId),
+      catalog_number || "",
+      nvph_number || "",
+      denomination || "",
+      color || "",
+      Number(height || 0),
+      Number(width || 0),
+      image_path || "",
+      stamp_type || "",
+      stampId,
+    );
+    normalizeStampOrdersForBlock(existing.block_id);
+    normalizeStampOrdersForBlock(targetBlockId);
+  } else {
+    db.prepare(
+      `UPDATE stamps
+       SET block_id = ?,
+           catalog_number = ?,
+           nvph_number = ?,
+           denomination = ?,
+           color = ?,
+           height = ?,
+           width = ?,
+           image_path = ?,
+           stamp_type = ?
+       WHERE stamp_id = ?`,
+    ).run(
+      targetBlockId,
+      catalog_number || "",
+      nvph_number || "",
+      denomination || "",
+      color || "",
+      Number(height || 0),
+      Number(width || 0),
+      image_path || "",
+      stamp_type || "",
+      stampId,
+    );
+  }
 
   updateBlockStampCounts(existing.block_id);
   updateBlockStampCounts(targetBlockId);
@@ -400,10 +495,12 @@ app.post("/api/stamps/:stampId/move", (req, res) => {
     return res.status(400).json({ error: "Invalid target block" });
   }
 
-  db.prepare("UPDATE stamps SET block_id = ? WHERE stamp_id = ?").run(
-    targetBlockId,
-    stampId,
-  );
+  db.prepare(
+    "UPDATE stamps SET block_id = ?, stamp_order = ? WHERE stamp_id = ?",
+  ).run(targetBlockId, nextStampOrder(targetBlockId), stampId);
+
+  normalizeStampOrdersForBlock(stamp.block_id);
+  normalizeStampOrdersForBlock(targetBlockId);
 
   updateBlockStampCounts(stamp.block_id);
   updateBlockStampCounts(targetBlockId);
@@ -423,11 +520,17 @@ app.delete("/api/stamps/:stampId", (req, res) => {
   }
 
   db.prepare("DELETE FROM stamps WHERE stamp_id = ?").run(stampId);
+  normalizeStampOrdersForBlock(stamp.block_id);
   updateBlockStampCounts(stamp.block_id);
 
   return res.json({ ok: true });
 });
 
 app.listen(PORT, () => {
+  normalizeBlockOrders();
+  const blockIds = db
+    .prepare("SELECT block_id FROM blocks ORDER BY block_id ASC")
+    .all();
+  blockIds.forEach((row) => normalizeStampOrdersForBlock(row.block_id));
   console.log(`Stamp editor running at http://localhost:${PORT}`);
 });

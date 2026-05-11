@@ -78,7 +78,10 @@
       </aside>
 
       <section class="panel blocks-panel">
-        <h2>Blocks</h2>
+        <div class="blocks-toolbar">
+          <h2>Blocks</h2>
+          <button id="toggleCollapseAllBtn" type="button">Collapse All</button>
+        </div>
         <p class="hint">
           Drag stamps between blocks. Click a stamp or block to edit details in
           the forms.
@@ -102,7 +105,18 @@
           <strong class="catalog"></strong>
           <span class="meta"></span>
         </div>
-        <button class="danger remove-stamp" type="button">Remove</button>
+        <button
+          class="danger remove-stamp icon-btn"
+          type="button"
+          title="Remove stamp"
+          aria-label="Remove stamp"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M9 3h6l1 2h4v2H4V5h4l1-2zm1 6h2v9h-2V9zm4 0h2v9h-2V9zM7 9h2v9H7V9z"
+            />
+          </svg>
+        </button>
       </article>
     </template>
 
