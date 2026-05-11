@@ -112,6 +112,15 @@
   background: #fff;
 }
 
+#filterStampCountOperator {
+  flex: 0 0 4.25rem;
+  width: 4.25rem;
+}
+
+#filterStampCount {
+  flex: 1 1 auto;
+}
+
 .filter-inline-check {
   display: flex;
   align-items: center;

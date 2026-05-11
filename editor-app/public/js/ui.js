@@ -33,6 +33,8 @@ const defaultFilter = () => ({
   catalogNumber: "",
   nvphNumber: "",
   blockName: "",
+  stampCount: null,
+  stampCountOperator: ">",
   color: "",
   denomination: "",
   width: null,
@@ -60,6 +62,18 @@ function blockPassesFilter(f, block) {
   if (f.blockName) {
     if (!(block.title || "").toLowerCase().includes(f.blockName.toLowerCase()))
       return false;
+  }
+  if (f.stampCount !== null) {
+    const stampCount = block.stamps?.length ?? 0;
+    if (f.stampCountOperator === ">" && !(stampCount > f.stampCount)) {
+      return false;
+    }
+    if (f.stampCountOperator === "<" && !(stampCount < f.stampCount)) {
+      return false;
+    }
+    if (f.stampCountOperator === "=" && stampCount !== f.stampCount) {
+      return false;
+    }
   }
   return true;
 }
@@ -128,6 +142,7 @@ function countActiveFilters(f) {
   if (f.catalogNumber) n++;
   if (f.nvphNumber) n++;
   if (f.blockName) n++;
+  if (f.stampCount !== null) n++;
   if (f.color) n++;
   if (f.denomination) n++;
   if (f.width !== null) n++;
@@ -162,6 +177,12 @@ export function bindFilterPanel(onFilterChange) {
         .value.trim(),
       nvphNumber: filterPanel.querySelector("#filterNvphNumber").value.trim(),
       blockName: filterPanel.querySelector("#filterBlockName").value.trim(),
+      stampCount: filterPanel.querySelector("#filterStampCount").value
+        ? Number(filterPanel.querySelector("#filterStampCount").value)
+        : null,
+      stampCountOperator: filterPanel.querySelector(
+        "#filterStampCountOperator",
+      ).value,
       color: filterPanel.querySelector("#filterColor").value.trim(),
       denomination: filterPanel
         .querySelector("#filterDenomination")
@@ -190,15 +211,18 @@ export function bindFilterPanel(onFilterChange) {
       .forEach((input) => {
         input.value = "";
       });
+    filterPanel.querySelectorAll("select").forEach((select) => {
+      select.selectedIndex = 0;
+    });
     filterPanel.querySelectorAll("input[type='checkbox']").forEach((input) => {
       input.checked = false;
     });
     readAndApply();
   });
 
-  filterPanel.querySelectorAll("input").forEach((input) => {
-    input.addEventListener("input", readAndApply);
-    input.addEventListener("change", readAndApply);
+  filterPanel.querySelectorAll("input, select").forEach((field) => {
+    field.addEventListener("input", readAndApply);
+    field.addEventListener("change", readAndApply);
   });
 }
 

@@ -83,6 +83,23 @@
               />
             </label>
             <label class="filter-field"
+              >Number of stamps
+              <div class="filter-field-row">
+                <select id="filterStampCountOperator" aria-label="Stamp count operator">
+                  <option value=">">&gt;</option>
+                  <option value="<">&lt;</option>
+                  <option value="=">=</option>
+                </select>
+                <input
+                  id="filterStampCount"
+                  type="number"
+                  min="0"
+                  placeholder="e.g. 4"
+                  autocomplete="off"
+                />
+              </div>
+            </label>
+            <label class="filter-field"
               >Color
               <input
                 id="filterColor"
