@@ -417,7 +417,21 @@ export function bindStaticEvents(handlers) {
 
 function blockHeaderText(block) {
   const count = block.stamps?.length || 0;
-  return `${block.year || "No year"} | ${count} stamp${count === 1 ? "" : "s"}`;
+  let nvphRange = "";
+  if (block.stamps && block.stamps.length > 0) {
+    const nvphNumbers = block.stamps
+      .map((stamp) => stamp.nvph_number || stamp.nvphNumber || "")
+      .filter(Boolean)
+      .map((num) => String(num).replace(/^nvph[-\s]*/i, ""));
+
+    if (nvphNumbers.length > 0) {
+      const first = nvphNumbers[0];
+      const last = nvphNumbers[nvphNumbers.length - 1];
+      nvphRange = ` | nvph ${first} - ${last}`;
+    }
+  }
+
+  return `${block.year || "No year"} | ${count} stamp${count === 1 ? "" : "s"}${nvphRange}`;
 }
 
 function stampMetaText(stamp) {
@@ -666,6 +680,9 @@ export function renderBlocks(handlers) {
       const card = stampCardTemplate.content.firstElementChild.cloneNode(true);
       card.dataset.stampId = String(stamp.stamp_id);
       card.draggable = true;
+      if (!stamp.print) {
+        card.classList.add("is-not-printed");
+      }
       // Stamp drag events
       card.addEventListener("dragstart", (event) => {
         event.stopPropagation();

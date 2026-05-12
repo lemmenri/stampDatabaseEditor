@@ -400,6 +400,11 @@ button:hover {
   background: #fff;
 }
 
+.stamp-card.is-not-printed {
+  background: #e3e8ee;
+  border-color: #d3d8de;
+}
+
 .stamp-card img {
   width: 56px;
   height: 56px;
