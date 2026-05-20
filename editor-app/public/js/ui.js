@@ -34,6 +34,17 @@ const closeStampDialogBtn = document.getElementById("closeStampDialogBtn");
 const cancelBlockBtn = document.getElementById("cancelBlockBtn");
 const cancelStampBtn = document.getElementById("cancelStampBtn");
 const collapsedBlockIds = new Set();
+let lastFocusedStampCard = null;
+let lastFocusedStampId = null;
+let lastFocusedCollapseBtn = null;
+let lastFocusedCollapseBlockId = null;
+let lastFocusedEditBlockBtn = null;
+let lastFocusedEditBlockId = null;
+
+// In-page trace buffer for debugging focus restore behavior in tests
+if (typeof window !== "undefined") {
+  window.__focusTrace = window.__focusTrace || [];
+}
 
 const defaultFilter = () => ({
   yearAfter: null,
@@ -245,18 +256,67 @@ export function openBlockDialog() {
 
 export function openStampDialog() {
   openDialog(stampDialog);
+  const nvphField = stampForm.querySelector('[name="nvph_number"]');
+  if (nvphField) {
+    try {
+      nvphField.focus();
+      nvphField.select && nvphField.select();
+    } catch (e) {
+      // ignore focus errors
+    }
+  }
 }
 
 export function closeBlockDialog() {
   if (blockDialog.open) {
     blockDialog.close();
   }
+  // Try to restore focus to the edit block button that opened the dialog.
+  // The DOM may have been re-rendered after saving, so prefer finding by
+  // block id, falling back to the original element reference if still present.
+  try {
+    if (lastFocusedEditBlockId) {
+      const btn = document.querySelector(`.block-column[data-block-id="${lastFocusedEditBlockId}"] button[title="Edit block"]`);
+      if (btn) {
+        try { window.__focusTrace && window.__focusTrace.push({ when: Date.now(), event: 'edit-block-restore-found', blockId: lastFocusedEditBlockId }); } catch (e) { }
+        btn.focus();
+      } else if (lastFocusedEditBlockBtn && document.contains(lastFocusedEditBlockBtn)) {
+        try { window.__focusTrace && window.__focusTrace.push({ when: Date.now(), event: 'edit-block-restore-fallback', blockId: lastFocusedEditBlockId }); } catch (e) { }
+        lastFocusedEditBlockBtn.focus();
+      } else {
+        try { window.__focusTrace && window.__focusTrace.push({ when: Date.now(), event: 'edit-block-restore-missing', blockId: lastFocusedEditBlockId }); } catch (e) { }
+      }
+    }
+  } catch (e) {
+    // ignore focus errors
+  }
+  lastFocusedEditBlockBtn = null;
+  lastFocusedEditBlockId = null;
 }
 
 export function closeStampDialog() {
   if (stampDialog.open) {
     stampDialog.close();
   }
+  // Try to restore focus to the original stamp card. The DOM may have been
+  // re-rendered after saving, so prefer finding by stamp id, falling back to
+  // the original element reference if still present.
+  try {
+    if (lastFocusedStampId) {
+      const newCard = document.querySelector(`.stamp-card[data-stamp-id="${lastFocusedStampId}"]`);
+      if (newCard) {
+        newCard.focus();
+      } else if (lastFocusedStampCard && document.contains(lastFocusedStampCard)) {
+        lastFocusedStampCard.focus();
+      }
+    } else if (lastFocusedStampCard && document.contains(lastFocusedStampCard)) {
+      lastFocusedStampCard.focus();
+    }
+  } catch (e) {
+    // ignore focus errors
+  }
+  lastFocusedStampCard = null;
+  lastFocusedStampId = null;
 }
 
 export function setBlockFormError(msg) {
@@ -318,10 +378,10 @@ export function resetStampForm(defaults = {}) {
   stampForm.elements.block_id.value = defaults.block_id ?? "";
   stampForm.elements.catalog_number.value = defaults.catalog_number ?? "";
   stampForm.elements.nvph_number.value = defaults.nvph_number ?? "";
-  stampForm.elements.denomination.value = defaults.denomination ?? "";
   stampForm.elements.color.value = defaults.color ?? "";
-  stampForm.elements.height.value = defaults.height ?? 0;
+  stampForm.elements.denomination.value = defaults.denomination ?? "";
   stampForm.elements.width.value = defaults.width ?? 0;
+  stampForm.elements.height.value = defaults.height ?? 0;
   stampForm.elements.image_path.value = defaults.image_path ?? "";
   stampForm.elements.stamp_type.value = defaults.stamp_type ?? "";
   stampForm.elements.print.checked = defaults.print ?? false;
@@ -630,12 +690,26 @@ export function renderBlocks(handlers) {
     collapseBtn.setAttribute("aria-label", collapseBtn.title);
     collapseBtn.setAttribute("aria-expanded", String(!isCollapsed));
     collapseBtn.addEventListener("click", () => {
+      // Track which collapse button triggered the action so we can restore
+      // focus after `renderBlocks` re-creates the DOM.
+      lastFocusedCollapseBtn = collapseBtn;
+      lastFocusedCollapseBlockId = block.block_id;
+      try { window.__focusTrace && window.__focusTrace.push({ when: Date.now(), event: 'collapse-click', blockId: block.block_id }); } catch (e) { }
       if (collapsedBlockIds.has(block.block_id)) {
         collapsedBlockIds.delete(block.block_id);
       } else {
         collapsedBlockIds.add(block.block_id);
       }
       renderBlocks(handlers);
+    });
+    // Also capture keyboard activation early so we have a reliable trace when
+    // buttons are activated via Enter/Space (some browsers synthesize click).
+    collapseBtn.addEventListener("keydown", (ev) => {
+      if (ev.key === "Enter" || ev.key === " " || ev.key === "Spacebar") {
+        lastFocusedCollapseBtn = collapseBtn;
+        lastFocusedCollapseBlockId = block.block_id;
+        try { window.__focusTrace && window.__focusTrace.push({ when: Date.now(), event: 'collapse-keydown', key: ev.key, blockId: block.block_id }); } catch (e) { }
+      }
     });
     const editBtn = document.createElement("button");
     editBtn.innerHTML =
@@ -644,7 +718,12 @@ export function renderBlocks(handlers) {
     editBtn.className = "icon-btn";
     editBtn.title = "Edit block";
     editBtn.setAttribute("aria-label", "Edit block");
-    editBtn.addEventListener("click", () => handlers.onSelectBlock(block));
+    editBtn.addEventListener("click", () => {
+      lastFocusedEditBlockBtn = editBtn;
+      lastFocusedEditBlockId = block.block_id;
+      try { window.__focusTrace && window.__focusTrace.push({ when: Date.now(), event: 'edit-block-click', blockId: block.block_id }); } catch (e) { }
+      handlers.onSelectBlock(block);
+    });
     const addStampBtn = document.createElement("button");
     addStampBtn.innerHTML =
       '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5h2v14h-2zM5 11h14v2H5z"/></svg>';
@@ -680,6 +759,10 @@ export function renderBlocks(handlers) {
       const card = stampCardTemplate.content.firstElementChild.cloneNode(true);
       card.dataset.stampId = String(stamp.stamp_id);
       card.draggable = true;
+      // Ensure stamp cards are keyboard-focusable and activated by Enter/Space
+      if (!card.hasAttribute("tabindex")) {
+        card.setAttribute("tabindex", "0");
+      }
       if (!stamp.print) {
         card.classList.add("is-not-printed");
       }
@@ -737,7 +820,21 @@ export function renderBlocks(handlers) {
         if (event.target.closest(".remove-stamp")) {
           return;
         }
+        lastFocusedStampCard = card;
+        lastFocusedStampId = card.dataset.stampId ?? null;
         handlers.onSelectStamp(stamp);
+      });
+      card.addEventListener("keydown", (event) => {
+        // Activate on Enter or Space
+        if (event.key === "Enter" || event.key === " " || event.key === "Spacebar") {
+          event.preventDefault();
+          // Avoid triggering when focus is on the remove button
+          const active = document.activeElement;
+          if (active && active.classList && active.classList.contains("remove-stamp")) return;
+          lastFocusedStampCard = card;
+          lastFocusedStampId = card.dataset.stampId ?? null;
+          handlers.onSelectStamp(stamp);
+        }
       });
       card
         .querySelector(".remove-stamp")
@@ -845,4 +942,26 @@ export function renderBlocks(handlers) {
     blockNode.append(head, stampList);
     blocksContainer.append(blockNode);
   });
+  // After rendering all blocks, try to restore focus to a collapse/expand
+  // button that triggered the re-render (keyboard users expect focus to stay
+  // on the same toggle). Prefer finding by stable block id, fallback to the
+  // original element reference. Record trace events for diagnosis.
+  try {
+    if (lastFocusedCollapseBlockId) {
+      const btn = document.querySelector(`.block-column[data-block-id="${lastFocusedCollapseBlockId}"] .collapse-toggle`);
+      if (btn) {
+        try { window.__focusTrace && window.__focusTrace.push({ when: Date.now(), event: 'collapse-restore-found', blockId: lastFocusedCollapseBlockId }); } catch (e) { }
+        btn.focus();
+      } else if (lastFocusedCollapseBtn && document.contains(lastFocusedCollapseBtn)) {
+        try { window.__focusTrace && window.__focusTrace.push({ when: Date.now(), event: 'collapse-restore-fallback', blockId: lastFocusedCollapseBlockId }); } catch (e) { }
+        lastFocusedCollapseBtn.focus();
+      } else {
+        try { window.__focusTrace && window.__focusTrace.push({ when: Date.now(), event: 'collapse-restore-missing', blockId: lastFocusedCollapseBlockId }); } catch (e) { }
+      }
+    }
+  } catch (e) {
+    // ignore
+  }
+  lastFocusedCollapseBtn = null;
+  lastFocusedCollapseBlockId = null;
 }

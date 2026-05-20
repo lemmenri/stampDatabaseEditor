@@ -178,10 +178,10 @@
       </label>
       <label>Catalog number <input name="catalog_number" required /></label>
       <label>NVPH number <input name="nvph_number" /></label>
-      <label>Denomination <input name="denomination" /></label>
       <label>Color <input name="color" /></label>
-      <label>Height <input name="height" type="number" step="0.1" /></label>
+      <label>Denomination <input name="denomination" /></label>
       <label>Width <input name="width" type="number" step="0.1" /></label>
+      <label>Height <input name="height" type="number" step="0.1" /></label>
       <label>Image path
         <input name="image_path" placeholder="images/stamps/example.jpg" /></label>
       <label>Type <input name="stamp_type" /></label>
@@ -197,7 +197,7 @@
   </dialog>
 
   <template id="stampCardTemplate">
-    <article class="stamp-card" draggable="true">
+    <article class="stamp-card" draggable="true" tabindex="0">
       <img alt="stamp" />
       <div class="stamp-card-body">
         <strong class="catalog"></strong>
