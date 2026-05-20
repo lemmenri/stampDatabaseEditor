@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "generate:testdata": "node generate-testdata.js",
-    "editor:start": "node editor-app/server.js"
+    "editor:start": "node editor-app/server.js",
+    "sizes": "node stamp-size-count.js"
   },
   "keywords": [],
   "author": "",
