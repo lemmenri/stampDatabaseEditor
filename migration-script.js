@@ -10,7 +10,8 @@ db.exec(`
   CREATE TABLE IF NOT EXISTS blocks (
     block_id INTEGER PRIMARY KEY AUTOINCREMENT,
     year TEXT,
-    title TEXT
+    title TEXT,
+    sub_title TEXT
   );
 
   CREATE TABLE IF NOT EXISTS stamps (

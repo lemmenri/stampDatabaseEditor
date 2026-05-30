@@ -2,20 +2,24 @@
   opacity: 0.5;
   border: 2px dashed var(--accent);
 }
+
 .block-column.drag-over-block {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
   background: #e6f7f7;
 }
+
 .stamp-card.dragging {
   opacity: 0.5;
   border: 2px dashed var(--accent);
 }
+
 .stamp-card.drag-over-stamp {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
   background: #e6f7f7;
 }
+
 .stamp-list.drag-over {
   background: #e6f7f7;
 }
@@ -25,6 +29,7 @@
   border: 2px dashed var(--accent);
   border-radius: 6px;
 }
+
 .error-banner {
   background: #fff2f1;
   color: #b42318;
@@ -145,6 +150,7 @@
   display: flex;
   justify-content: flex-end;
 }
+
 :root {
   --bg: #f2f4f7;
   --panel: #ffffff;
@@ -370,6 +376,13 @@ button:hover {
 .block-title {
   margin: 0;
   font-size: 1rem;
+}
+
+.block-subtitle {
+  margin: 0.2rem 0 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 400;
 }
 
 .block-meta {

@@ -198,6 +198,7 @@ function getBlocks() {
         block_id,
         year,
         title,
+        sub_title,
         block_order
       FROM blocks
       ORDER BY (block_order IS NULL) ASC, block_order ASC, block_id ASC`,
@@ -213,6 +214,7 @@ function toExportCollection(blocks) {
       metadata: {
         year: block.year || "",
         title: block.title || "",
+        subTitle: block.sub_title || "",
         nrOfStamps: String(block.stamps?.length ?? 0),
       },
       stamps: (block.stamps || []).map((stamp) => {
@@ -312,8 +314,8 @@ app.post("/api/import/json", (req, res) => {
   const replaceMode = mode === "replace";
 
   const insertBlockStmt = db.prepare(
-    `INSERT INTO blocks (year, title, block_order)
-     VALUES (?, ?, ?)`,
+    `INSERT INTO blocks (year, title, sub_title, block_order)
+     VALUES (?, ?, ?, ?)`,
   );
   const insertStampStmt = db.prepare(
     `INSERT INTO stamps (block_id, catalog_number, nvph_number, denomination, color, height, width, image_path, stamp_type, stamp_order, print)
@@ -337,6 +339,7 @@ app.post("/api/import/json", (req, res) => {
       const blockId = insertBlockStmt.run(
         metadata.year || "",
         metadata.title || "",
+        metadata.subTitle || "",
         nextOrder++,
       ).lastInsertRowid;
 
@@ -385,21 +388,22 @@ app.post("/api/import/json", (req, res) => {
 });
 
 app.post("/api/blocks", (req, res) => {
-  const { year, title } = req.body;
+  const { year, title, sub_title } = req.body;
 
   const result = db
     .prepare(
-      `INSERT INTO blocks (year, title, block_order)
-       VALUES (?, ?, ?)`,
+      `INSERT INTO blocks (year, title, sub_title, block_order)
+       VALUES (?, ?, ?, ?)`,
     )
-    .run(year || "", title || "", nextBlockOrder());
+    .run(year || "", title || "", sub_title || "", nextBlockOrder());
 
   const created = db
     .prepare(
       `SELECT
         block_id,
         year,
-        title
+        title,
+        sub_title
        FROM blocks
        WHERE block_id = ?`,
     )
@@ -410,21 +414,23 @@ app.post("/api/blocks", (req, res) => {
 
 app.put("/api/blocks/:blockId", (req, res) => {
   const blockId = Number(req.params.blockId);
-  const { year, title } = req.body;
+  const { year, title, sub_title } = req.body;
 
   db.prepare(
     `UPDATE blocks
        SET year = ?,
-           title = ?
+           title = ?,
+           sub_title = ?
      WHERE block_id = ?`,
-  ).run(year || "", title || "", blockId);
+  ).run(year || "", title || "", sub_title || "", blockId);
 
   const updated = db
     .prepare(
       `SELECT
         block_id,
         year,
-        title
+        title,
+        sub_title
        FROM blocks
        WHERE block_id = ?`,
     )

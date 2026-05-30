@@ -25,5 +25,6 @@ export type Stamp = {
 export type BlockMetadata = {
   year: string;
   title: string;
+  subTitle: string;
   nrOfStamps: string;
 };

@@ -58,6 +58,7 @@ function makeBlockMetadata(stampCount, blockIndex) {
   return {
     year: String(2024 + blockIndex),
     title: `Generated Block ${blockIndex + 1}`,
+    subTitle: `A collection of ${stampCount} stamps`,
     nrOfStamps: String(stampCount),
   };
 }

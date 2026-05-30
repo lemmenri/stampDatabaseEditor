@@ -345,6 +345,7 @@ export function blockFormData() {
     block_id: formData.get("block_id"),
     year: formData.get("year"),
     title: formData.get("title"),
+    sub_title: formData.get("sub_title"),
   };
 }
 
@@ -370,6 +371,7 @@ export function resetBlockForm(defaults = {}) {
   blockForm.elements.block_id.value = defaults.block_id ?? "";
   blockForm.elements.year.value = defaults.year ?? "";
   blockForm.elements.title.value = defaults.title ?? "";
+  blockForm.elements.sub_title.value = defaults.sub_title ?? "";
 }
 
 export function resetStampForm(defaults = {}) {
@@ -665,17 +667,22 @@ export function renderBlocks(handlers) {
       dragOverBlockId = null;
     });
 
-    // ...existing code for head/buttons...
     const head = document.createElement("div");
     head.className = "block-head";
     const titleWrap = document.createElement("div");
     const title = document.createElement("h3");
     title.className = "block-title";
     title.textContent = block.title || `Block ${block.block_id}`;
+    const subtitle = document.createElement("p");
+    subtitle.className = "block-subtitle";
+    subtitle.textContent = block.sub_title || "";
+    if (!block.sub_title) {
+      subtitle.style.display = "none";
+    }
     const meta = document.createElement("p");
     meta.className = "block-meta";
     meta.textContent = blockHeaderText(block);
-    titleWrap.append(title, meta);
+    titleWrap.append(title, subtitle, meta);
     const buttons = document.createElement("div");
     buttons.className = "block-actions";
     const collapseBtn = document.createElement("button");
